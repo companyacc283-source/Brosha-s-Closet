@@ -3,8 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Brosha's Closet - ডেমরা, ঢাকা</title>
-<meta name="description" content="Brosha's Closet: থ্রি-পিস, কো-অর্ড সেট, গার্লস ফ্যাশন, কিডস ও পাঞ্জাবি। সারা বাংলাদেশে ডেলিভারি।">
+<title>Brosha's Closet | থ্রি-পিস, কো-অর্ড সেট, গার্লস ও কিডস ফ্যাশন - ডেমরা, ঢাকা</title>
+<meta name="description" content="Brosha's Closet, ডেমরা ঢাকা: মেয়েদের থ্রি-পিস, কো-অর্ড সেট, গার্লস ফ্যাশন, কিডস ও পাঞ্জাবি। সারা বাংলাদেশে ক্যাশ অন ডেলিভারি।">
+<link rel="canonical" href="https://brosha-s-closet.vercel.app/">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Brosha's Closet"><meta property="og:title" content="Brosha's Closet - ডেমরা, ঢাকা"><meta property="og:description" content="থ্রি-পিস, কো-অর্ড সেট, গার্লস ও কিডস ফ্যাশন। সারা বাংলাদেশে ডেলিভারি।"><meta property="og:url" content="https://brosha-s-closet.vercel.app/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"ClothingStore","name":"Brosha's Closet","url":"https://brosha-s-closet.vercel.app/","address":{"@type":"PostalAddress","streetAddress":"দোকান ২৫, পূর্বানী প্লাজা, কোনাপাড়া","addressLocality":"ডেমরা","addressRegion":"ঢাকা","addressCountry":"BD"},"areaServed":"BD"}</script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--k:#000;--w:#fff;--g:#b8902f;--gl:#f5ecd4;--l:#e6e6e6;--t:#555}
@@ -24,7 +27,7 @@ main{padding:6px 12px 30px;max-width:1000px;margin:auto}.pp{max-width:640px}
 .st{margin:18px 0 10px;font-size:19px;border-left:4px solid var(--g);padding-left:8px}
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
 @media(min-width:760px){.grid{grid-template-columns:repeat(4,1fr)}}
-.card{border:1px solid var(--l);cursor:pointer;background:var(--w)}
+.card{display:block;color:inherit;text-decoration:none;border:1px solid var(--l);cursor:pointer;background:var(--w)}
 .ph{position:relative}.ph>img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;background:var(--l)}
 .bd{position:absolute;left:6px;top:6px;background:var(--k);color:var(--g);padding:1px 8px;font-size:12px}
 .sh{position:absolute;right:6px;top:6px;background:rgba(255,255,255,.9);border:0;padding:3px 8px;font:inherit;font-size:12px;cursor:pointer}
@@ -64,7 +67,7 @@ footer{background:var(--k);color:#ccc;text-align:center;padding:22px 16px;font-s
 </style>
 </head>
 <body>
-<div id="app"></div><div id="modal" onclick="if(event.target==this)closeM()"></div>
+<div id="app"><h1>Brosha's Closet</h1><p>Brosha's Closet, ডেমরা ঢাকা: মেয়েদের থ্রি-পিস, কো-অর্ড সেট, গার্লস ফ্যাশন, কিডস ও পাঞ্জাবি। সারা বাংলাদেশে ক্যাশ অন ডেলিভারি।</p><p>দোকান ২৫, পূর্বানী প্লাজা, কোনাপাড়া, ডেমরা, ঢাকা</p></div><div id="modal" onclick="if(event.target==this)closeM()"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 /* ===== Brosha's Closet v2 =====  Sections: setup | storefront | cart+order | track | chat | admin | router */
@@ -85,17 +88,17 @@ async function loadS(){try{const{data}=await SB.from('settings').select('*');(da
 async function loadP(){const[a,b]=await Promise.all([SB.from('products').select('*,product_variants(*)').eq('is_active',true).order('created_at',{ascending:false}),SB.from('categories').select('*').order('sort')]);P=a.data||[];CT=b.data||[]}
 function modal(h){$('#modal').innerHTML=`<div class="sheet"><button class="x" onclick="closeM()">✕</button>${h}</div>`;$('#modal').classList.add('show')}
 const closeM=()=>$('#modal').classList.remove('show');
-function share(slug){const u=location.origin+'/#/p/'+slug,t=encodeURIComponent(u);modal(`<h2>শেয়ার করুন</h2><a class="btn" target="_blank" href="https://wa.me/?text=${t}">WhatsApp</a><a class="btn" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=${t}">Facebook</a><button class="btn ol" onclick="navigator.clipboard.writeText('${u}').then(()=>alert('লিংক কপি হয়েছে'))">লিংক কপি করুন</button>${navigator.share?`<button class="btn ol" onclick="navigator.share({url:'${u}'})">অন্যান্য অ্যাপে</button>`:''}`)}
+function share(slug){const u=location.origin+'/product/'+slug,t=encodeURIComponent(u);modal(`<h2>শেয়ার করুন</h2><a class="btn" target="_blank" href="https://wa.me/?text=${t}">WhatsApp</a><a class="btn" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=${t}">Facebook</a><button class="btn ol" onclick="navigator.clipboard.writeText('${u}').then(()=>alert('লিংক কপি হয়েছে'))">লিংক কপি করুন</button>${navigator.share?`<button class="btn ol" onclick="navigator.share({url:'${u}'})">অন্যান্য অ্যাপে</button>`:''}`)}
 
 /* ---- storefront ---- */
-const frame=()=>`<header><div class="logo" onclick="location.hash='/'">Brosha's Closet</div><input placeholder="প্রোডাক্ট খুঁজুন" oninput="doSearch(this.value)"><button class="hb" onclick="location.hash='/cart'">কার্ট <span id="cc">0</span></button></header><div id="v"></div><footer>দোকান ২৫, পূর্বানী প্লাজা, কোনাপাড়া, ডেমরা, ঢাকা<br>সারা বাংলাদেশে ডেলিভারি<br><a href="#/track">অর্ডার ট্র্যাক করুন</a>${S.fb?`<a href="${esc(S.fb)}" target="_blank">Facebook</a>`:''}${S.wa?`<a href="https://wa.me/${esc(S.wa)}" target="_blank">WhatsApp</a>`:''}<a href="#admin">Admin</a><br><small>v2.1</small></footer><button class="fab" onclick="openChat()">সাহায্য</button>`;
+const frame=()=>`<header><div class="logo" onclick="location.hash='/'">Brosha's Closet</div><input placeholder="প্রোডাক্ট খুঁজুন" oninput="doSearch(this.value)"><button class="hb" onclick="location.hash='/cart'">কার্ট <span id="cc">0</span></button></header><div id="v"></div><footer>দোকান ২৫, পূর্বানী প্লাজা, কোনাপাড়া, ডেমরা, ঢাকা<br>সারা বাংলাদেশে ডেলিভারি<br><a href="#/track">অর্ডার ট্র্যাক করুন</a>${S.fb?`<a href="${esc(S.fb)}" target="_blank">Facebook</a>`:''}${S.wa?`<a href="https://wa.me/${esc(S.wa)}" target="_blank">WhatsApp</a>`:''}<a href="#admin">Admin</a><br><small>v2.3</small></footer><button class="fab" onclick="openChat()">সাহায্য</button>`;
 async function shop(path){
  if(!$('#v'))$('#app').innerHTML=frame();
  if(!P){$('#v').innerHTML='<p class="empty">লোড হচ্ছে...</p>';await loadS();await loadP()}
  scrollTo(0,0);const m=path.match(/^\/p\/(.+)/);
  m?prod(m[1]):path=='/cart'?cartPg():path=='/track'?trackPg():home();save()}
-const card=p=>`<div class="card" onclick="location.hash='/p/${p.slug}'"><div class="ph"><img loading="lazy" src="${esc(img(p))}" alt="${esc(p.name)}">${disc(p)?`<b class="bd">-${disc(p)}%</b>`:''}<button class="sh" onclick="event.stopPropagation();share('${p.slug}')">শেয়ার</button></div><div class="inf"><div class="nm">${esc(p.name)}</div><div class="pr">${tk(p.price)}${p.old_price?`<s>${tk(p.old_price)}</s>`:''}</div><div class="cl">${left(p)?esc(vs(p).map(v=>v.color).filter(Boolean).join(' · ')):'<span class="out">স্টক নেই</span>'}</div></div></div>`;
-function home(){
+const card=p=>`<a class="card" href="/product/${p.slug}" onclick="event.preventDefault();location.hash='/p/${p.slug}'"><div class="ph"><img loading="lazy" src="${esc(img(p))}" alt="${esc(p.name)}">${disc(p)?`<b class="bd">-${disc(p)}%</b>`:''}<button class="sh" onclick="event.preventDefault();event.stopPropagation();share('${p.slug}')">শেয়ার</button></div><div class="inf"><div class="nm">${esc(p.name)}</div><div class="pr">${tk(p.price)}${p.old_price?`<s>${tk(p.old_price)}</s>`:''}</div><div class="cl">${left(p)?esc(vs(p).map(v=>v.color).filter(Boolean).join(' · ')):'<span class="out">স্টক নেই</span>'}</div></div></a>`;
+function home(){document.title="Brosha's Closet | থ্রি-পিস, কো-অর্ড সেট, গার্লস ও কিডস ফ্যাশন - ডেমরা, ঢাকা";
  const f=P.filter(p=>(!cat||p.category_id==cat)&&(!q||hay(p).includes(q.trim().toLowerCase()))),rich=!cat&&!q;
  const g=(t,l)=>l.length?`<h2 class="st">${t}</h2><div class="grid">${l.map(card).join('')}</div>`:'';
  $('#v').innerHTML=`${rich?`<div class="hero"><h1>${esc(S.hero||"Brosha's Closet")}</h1><p>সারা বাংলাদেশে ডেলিভারি</p></div>`:''}<div class="chips"><button class="chip ${cat?'':'on'}" onclick="cat='';home()">সব</button>${CT.map(c=>`<button class="chip ${cat==c.id?'on':''}" onclick="cat='${c.id}';home()">${esc(c.name)}</button>`).join('')}</div><main>${rich?g('নতুন এসেছে',f.slice(0,8))+g('বেস্ট সেলার',f.filter(p=>p.best_seller))+g('বিশেষ অফার',f.filter(p=>disc(p)))+g('ফিচার্ড',f.filter(p=>p.featured))+g('সব প্রোডাক্ট',f):g(esc(cat?catName(cat):'ফলাফল'),f)}${f.length?'':'<p class="empty">কোনো প্রোডাক্ট পাওয়া যায়নি।</p>'}</main>`}
@@ -213,7 +216,7 @@ async function aSet(){await loadS();$('#tb').innerHTML=`<div class="form">${SF.m
 async function svS(){const{error}=await SB.from('settings').upsert(SF.map(f=>({key:f[0],value:$('#s_'+f[0]).value.trim()})));alert(error?'সেভ হয়নি: '+error.message:'সেভ হয়েছে।')}
 
 /* ---- router ---- */
-const route=()=>{closeM();lbx();const h=location.hash;h=='#admin'?admin():shop(h.slice(1)||'/')};
+const route=()=>{closeM();lbx();if(location.hash&&location.pathname!='/')history.replaceState(null,'','/'+location.hash);const h=location.hash,m=location.pathname.match(/^\/product\/([^/]+)/);h=='#admin'?admin():shop(h?h.slice(1)||'/':m?'/p/'+decodeURIComponent(m[1]):'/')};
 addEventListener('hashchange',route);route();
 </script>
 </body>
