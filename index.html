@@ -56,8 +56,6 @@ textarea{min-height:70px}
 .login{max-width:360px;margin:60px auto;padding:0 16px}
 footer{background:var(--k);color:#ccc;text-align:center;padding:22px 16px;font-size:13px;line-height:1.9}footer a{color:var(--g);margin:0 6px}
 .fab{position:fixed;right:14px;bottom:16px;background:var(--k);color:var(--g);border:1px solid var(--g);padding:12px 18px;border-radius:30px;font:inherit;font-weight:700;z-index:8;cursor:pointer}
-.ob{position:fixed;left:0;right:0;bottom:0;z-index:7;display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:8px 12px;background:var(--w);border-top:1px solid var(--l)}.ob .btn{margin:0}
-.has-ob .fab{bottom:76px}.has-ob footer{padding-bottom:84px}
 .rt{color:var(--g);font-weight:600}
 #modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:flex-end;justify-content:center;z-index:20}#modal.show{display:flex}
 .sheet{background:var(--w);width:100%;max-width:520px;max-height:92vh;overflow:auto;padding:18px 16px 24px;position:relative;border-top:3px solid var(--g)}
@@ -92,14 +90,14 @@ async function loadS(){try{const{data}=await SB.from('settings').select('*');(da
 async function loadP(){const[a,b]=await Promise.all([SB.from('products').select('*,product_variants(*)').eq('is_active',true).order('created_at',{ascending:false}),SB.from('categories').select('*').order('sort')]);P=a.data||[];CT=b.data||[];await loadRT()}
 function modal(h){$('#modal').innerHTML=`<div class="sheet"><button class="x" onclick="closeM()">✕</button>${h}</div>`;$('#modal').classList.add('show')}
 const closeM=()=>$('#modal').classList.remove('show');
-function share(slug){const u=location.origin+'/product/'+slug,t=encodeURIComponent(u);modal(`<h2>শেয়ার করুন</h2><a class="btn" target="_blank" href="https://wa.me/?text=${t}">WhatsApp</a><a class="btn" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=${t}">Facebook</a><button class="btn ol" onclick="navigator.clipboard.writeText('${u}').then(()=>alert('লিংক কপি হয়েছে'))">লিংক কপি করুন</button>${navigator.share?`<button class="btn ol" onclick="navigator.share({url:'${u}'})">অন্যান্য অ্যাপে</button>`:''}`)}
+function share(slug){const u=location.origin+'/product/'+slug,t=encodeURIComponent(u),pr=(P||[]).find(x=>x.slug==slug),tw=encodeURIComponent((pr?pr.name+"\n":'')+u);modal(`<h2>বন্ধুদের শেয়ার করুন</h2><a class="btn" target="_blank" href="https://wa.me/?text=${tw}">WhatsApp-এ বন্ধুদের পাঠান</a><a class="btn" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=${t}">Facebook</a><button class="btn ol" onclick="navigator.clipboard.writeText('${u}').then(()=>alert('লিংক কপি হয়েছে'))">লিংক কপি করুন</button>${navigator.share?`<button class="btn ol" onclick="navigator.share({url:'${u}'})">অন্যান্য অ্যাপে</button>`:''}`)}
 
 /* ---- storefront ---- */
-const frame=()=>`<header><div class="logo" onclick="location.hash='/'">Brosha's Closet</div><input placeholder="প্রোডাক্ট খুঁজুন" oninput="doSearch(this.value)"><button class="hb" onclick="location.hash='/cart'">কার্ট <span id="cc">0</span></button></header><div id="v"></div><footer>দোকান ২৫, পূর্বানী প্লাজা, কোনাপাড়া, ডেমরা, ঢাকা<br>সারা বাংলাদেশে ডেলিভারি<br><a href="#/track">অর্ডার ট্র্যাক করুন</a>${S.fb?`<a href="${esc(S.fb)}" target="_blank">Facebook</a>`:''}${S.wa?`<a href="https://wa.me/${esc(S.wa)}" target="_blank">WhatsApp</a>`:''}<a href="#admin">Admin</a><br><small>v2.5</small></footer><button class="fab" onclick="openChat()">সাহায্য</button>`;
+const frame=()=>`<header><div class="logo" onclick="location.hash='/'">Brosha's Closet</div><input placeholder="প্রোডাক্ট খুঁজুন" oninput="doSearch(this.value)"><button class="hb" onclick="location.hash='/cart'">কার্ট <span id="cc">0</span></button></header><div id="v"></div><footer>দোকান ২৫, পূর্বানী প্লাজা, কোনাপাড়া, ডেমরা, ঢাকা<br>সারা বাংলাদেশে ডেলিভারি<br><a href="#/track">অর্ডার ট্র্যাক করুন</a>${S.fb?`<a href="${esc(S.fb)}" target="_blank">Facebook</a>`:''}${S.wa?`<a href="https://wa.me/${esc(S.wa)}" target="_blank">WhatsApp</a>`:''}<a href="#admin">Admin</a><br><small>v2.6</small></footer><button class="fab" onclick="openChat()">সাহায্য</button>`;
 async function shop(path){
  if(!$('#v'))$('#app').innerHTML=frame();
  if(!P){$('#v').innerHTML='<p class="empty">লোড হচ্ছে...</p>';await loadS();await loadP()}
- scrollTo(0,0);const m=path.match(/^\/p\/(.+)/);document.body.classList.toggle('has-ob',!!m);
+ scrollTo(0,0);const m=path.match(/^\/p\/(.+)/);
  m?prod(m[1]):path=='/cart'?cartPg():path=='/track'?trackPg():home();save()}
 const card=p=>`<a class="card" href="/product/${p.slug}" onclick="event.preventDefault();location.hash='/p/${p.slug}'"><div class="ph"><img loading="lazy" src="${esc(img(p))}" alt="${esc(p.name)}">${disc(p)?`<b class="bd">-${disc(p)}%</b>`:''}<button class="sh" onclick="event.preventDefault();event.stopPropagation();share('${p.slug}')">শেয়ার</button></div><div class="inf"><div class="nm">${esc(p.name)}</div><div class="pr">${tk(p.price)}${p.old_price?`<s>${tk(p.old_price)}</s>`:''}</div>${stars(p)}<div class="cl">${left(p)?esc(vs(p).map(v=>v.color).filter(Boolean).join(' · ')):'<span class="out">স্টক নেই</span>'}</div></div></a>`;
 function home(){document.title="Brosha's Closet | থ্রি-পিস, কো-অর্ড সেট, গার্লস ও কিডস ফ্যাশন - ডেমরা, ঢাকা";
@@ -113,7 +111,7 @@ function prod(slug){
  document.title=p.name+" - Brosha's Closet";sel={p,v:Math.max(0,vs(p).findIndex(v=>stk(v)>0)),s:'',n:1};pv()}
 function pv(){
  const{p,v:vi,s,n}=sel,V=vs(p),v=V[vi],price=v.price??p.price,mx=s?+v.sizes[s]:1;
- $('#v').innerHTML=`<main class="pp"><div class="gal" id="gal" onscroll="gs()">${v.images.map((u,i)=>`<img src="${esc(u)}" alt="${esc(p.name)} ${esc(v.color)}" onclick="zoom(${i})">`).join('')}</div>${v.images.length>1?`<div class="th">${v.images.map((u,i)=>`<button class="sw ${i?'':'on'}" onclick="go(${i})"><img src="${esc(u)}" alt=""></button>`).join('')}</div>`:''}<h2>${esc(p.name)}</h2><div class="pr big">${tk(price)}${p.old_price?`<s>${tk(p.old_price)}</s><b class="bd2">-${disc(p)}%</b>`:''}</div><label>রঙ: <b>${esc(v.color||'Default')}</b></label><div class="opt">${V.map((x,i)=>`<button class="chip ${i==vi?'on':''}" ${stk(x)?'':'disabled'} onclick="sel.v=${i};sel.s='';sel.n=1;pv()">${esc(x.color||'Default')}${stk(x)?'':' (শেষ)'}</button>`).join('')}</div><label>সাইজ</label><div class="opt">${szs(v).map(([k,c])=>`<button class="chip ${k==s?'on':''}" ${+c>0?'':'disabled'} onclick="sel.s='${esc(k)}';sel.n=1;pv()">${esc(k)}</button>`).join('')}</div>${s?`<div class="hint">স্টকে আছে: ${mx}টি</div>`:''}<label>পরিমাণ</label><div class="q"><button onclick="sel.n=Math.max(1,sel.n-1);pv()">−</button><b>${n}</b><button onclick="sel.n=Math.min(${mx},sel.n+1);pv()">+</button></div><button class="btn" onclick="waOrder()">WhatsApp-এ অর্ডার করুন</button><button class="btn ol" onclick="share('${p.slug}')">শেয়ার করুন</button><h3>বিবরণ</h3><p class="desc">${esc(p.description||'')}</p><div id="rv"></div></main><div class="ob"><button class="btn" onclick="addC(false)">কার্টে যোগ করুন</button><button class="btn gd" onclick="addC(true)">অর্ডার নাও</button></div>`;drawRev()}
+ $('#v').innerHTML=`<main class="pp"><div class="gal" id="gal" onscroll="gs()">${v.images.map((u,i)=>`<img src="${esc(u)}" alt="${esc(p.name)} ${esc(v.color)}" onclick="zoom(${i})">`).join('')}</div>${v.images.length>1?`<div class="th">${v.images.map((u,i)=>`<button class="sw ${i?'':'on'}" onclick="go(${i})"><img src="${esc(u)}" alt=""></button>`).join('')}</div>`:''}<h2>${esc(p.name)}</h2><div class="pr big">${tk(price)}${p.old_price?`<s>${tk(p.old_price)}</s><b class="bd2">-${disc(p)}%</b>`:''}</div><label>রঙ: <b>${esc(v.color||'Default')}</b></label><div class="opt">${V.map((x,i)=>`<button class="chip ${i==vi?'on':''}" ${stk(x)?'':'disabled'} onclick="sel.v=${i};sel.s='';sel.n=1;pv()">${esc(x.color||'Default')}${stk(x)?'':' (শেষ)'}</button>`).join('')}</div><label>সাইজ</label><div class="opt">${szs(v).map(([k,c])=>`<button class="chip ${k==s?'on':''}" ${+c>0?'':'disabled'} onclick="sel.s='${esc(k)}';sel.n=1;pv()">${esc(k)}</button>`).join('')}</div>${s?`<div class="hint">স্টকে আছে: ${mx}টি</div>`:''}<label>পরিমাণ</label><div class="q"><button onclick="sel.n=Math.max(1,sel.n-1);pv()">−</button><b>${n}</b><button onclick="sel.n=Math.min(${mx},sel.n+1);pv()">+</button></div><div class="two"><button class="btn" onclick="addC(false)">কার্টে যোগ করুন</button><button class="btn gd" onclick="addC(true)">অর্ডার নাও</button></div><button class="btn ol" onclick="share('${p.slug}')">বন্ধুদের শেয়ার করুন</button><h3>বিবরণ</h3><p class="desc">${esc(p.description||'')}</p><div id="rv"></div></main>`;drawRev()}
 function go(i){const g=$('#gal');g.scrollTo({left:i*g.clientWidth,behavior:'smooth'})}
 function gs(){const g=$('#gal'),i=Math.round(g.scrollLeft/g.clientWidth);document.querySelectorAll('.th .sw').forEach((b,j)=>b.classList.toggle('on',j==i))}
 function zoom(i){const d=document.createElement('div');d.id='lb';d.innerHTML=`<button class="x" onclick="lbx()">✕</button><div class="lbs"><img src="${esc(vs(sel.p)[sel.v].images[i])}" alt="" onclick="this.classList.toggle('z')"></div><p>ট্যাপ করলে জুম হবে, আঙুল দিয়ে সরিয়ে দেখুন</p>`;document.body.appendChild(d)}
@@ -144,11 +142,6 @@ async function sendRev(){
  const M={ok:'ধন্যবাদ! আপনার রিভিউ জমা হয়েছে।',no_order:'এই অর্ডার নম্বর ও মোবাইল নম্বরে কোনো অর্ডার পাওয়া যায়নি।',not_delivered:'অর্ডার ডেলিভারি হওয়ার পর রিভিউ দিতে পারবেন।',no_product:'এই অর্ডারে এই প্রোডাক্টটি নেই।',duplicate:'এই অর্ডারের জন্য আপনি আগেই রিভিউ দিয়েছেন।'};
  alert(M[data]||'রিভিউ জমা হয়নি।');
  if(data=='ok'){closeM();delete RV[sel.p.id];await loadRT();drawRev()}}
-function waOrder(){
- const num=String(S.wa||'').replace(/\D/g,'');if(!num){alert('WhatsApp নম্বর এখনো সেট করা নেই।');return}
- const{p,v:vi,s,n}=sel,v=vs(p)[vi];if(!s){alert('আগে সাইজ বেছে নিন।');return}
- const m='আসসালামু আলাইকুম, আমি এই প্রোডাক্টটি অর্ডার করতে চাই:\n'+p.name+'\nরঙ: '+(v.color||'-')+', সাইজ: '+s+', পরিমাণ: '+n+'\nদাম: '+tk((v.price??p.price)*n)+'\n'+location.origin+'/product/'+p.slug;
- open('https://wa.me/'+num+'?text='+encodeURIComponent(m),'_blank')}
 /* ---- cart + order ---- */
 function cartPg(){
  if(!cart.length)return $('#v').innerHTML='<main class="pp"><h2>কার্ট খালি</h2><a class="btn" href="#/">কেনাকাটা শুরু করুন</a></main>';
@@ -178,17 +171,51 @@ async function trk(){const{data}=await SB.rpc('track_order',{n:+$('#tn').value.r
 
 /* ---- AI chat (needs /api/chat + GEMINI_API_KEY; works without it, shows WhatsApp) ---- */
 function openChat(){
- modal(`<h2>সাহায্য</h2><div class="msgs" id="msgs"></div><div class="qs">${['ডেলিভারি চার্জ কত?','কীভাবে পেমেন্ট করব?','অর্ডার কীভাবে করব?'].map(t=>`<button class="chip" onclick="ask(this.textContent)">${t}</button>`).join('')}</div><div class="cb"><input id="cq" placeholder="আপনার প্রশ্ন লিখুন" onkeydown="if(event.key=='Enter')ask()"><button onclick="ask()">পাঠান</button></div>${S.wa?`<a class="btn" target="_blank" href="https://wa.me/${esc(S.wa)}">WhatsApp-এ কথা বলুন</a>`:''}`);
+ modal(`<h2>সাহায্য</h2><div class="msgs" id="msgs"></div><div class="qs">${['কী কী প্রোডাক্ট আছে?','ডেলিভারি চার্জ কত?','কীভাবে অর্ডার করব?','কীভাবে পেমেন্ট করব?'].map(t=>`<button class="chip" onclick="ask(this.textContent)">${t}</button>`).join('')}</div><div class="cb"><input id="cq" placeholder="আপনার প্রশ্ন লিখুন" onkeydown="if(event.key=='Enter')ask()"><button onclick="ask()">পাঠান</button></div>${S.wa?`<a class="btn" target="_blank" href="https://wa.me/${esc(S.wa)}">WhatsApp-এ কথা বলুন</a>`:''}`);
  if(!hist.length)hist.push({r:'a',t:"আসসালামু আলাইকুম! Brosha's Closet-এ স্বাগতম। প্রোডাক্ট, দাম, সাইজ, ডেলিভারি বা অর্ডার নিয়ে যেকোনো প্রশ্ন করুন।"});drawM()}
-function drawM(){const m=$('#msgs');if(!m)return;m.innerHTML=hist.map(x=>`<div class="m ${x.r}">${esc(x.t)}</div>`).join('');m.scrollTop=m.scrollHeight}
+function drawM(){const m=$('#msgs');if(!m)return;m.innerHTML=hist.map(x=>`<div class="m ${x.r}">${esc(x.t).replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" style="color:inherit;text-decoration:underline">$1</a>')}</div>`).join('');m.scrollTop=m.scrollHeight}
+let aiOff=false;
 async function ask(t){
  const i=$('#cq');t=(t||i.value).trim();if(!t)return;i.value='';hist.push({r:'u',t},{r:'a',t:'লিখছি...'});drawM();
- let a='দুঃখিত, এখন উত্তর দিতে পারছি না। অনুগ্রহ করে WhatsApp-এ কথা বলুন।';
- try{const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:hist.slice(0,-1).map(x=>({role:x.r=='u'?'user':'model',text:x.t}))})}),d=await r.json();if(d.reply)a=d.reply}catch(e){}
- hist[hist.length-1].t=a;drawM()}
-
+ let a='';
+ if(!aiOff){try{const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:hist.slice(0,-1).map(x=>({role:x.r=='u'?'user':'model',text:x.t}))})}),d=await r.json();if(d.reply&&!d.reply.startsWith('দুঃখিত, এখন উত্তর দিতে পারছি না'))a=d.reply;else aiOff=true}catch(e){aiOff=true}}
+ hist[hist.length-1].t=a||localAnswer(t);drawM()}
+/* built-in assistant: answers from the shop's own products and settings, no API key needed */
+const BD=x=>x.replace(/[০-৯]/g,d=>'০১২৩৪৫৬৭৮৯'.indexOf(d)),hs=(q,k)=>k.some(w=>q.includes(w)),nh=p=>[p.name,catName(p.category_id),...vs(p).map(v=>v.color)].join(' ').toLowerCase();
+const sizesOf=p=>[...new Set(vs(p).flatMap(v=>Object.entries(v.sizes||{}).filter(([k,n])=>+n>0).map(([k])=>k)))];
+const pline=p=>`• ${p.name} - ${tk(p.price)}${p.old_price?` (আগে ${tk(p.old_price)})`:''}${left(p)?` | রঙ: ${vs(p).filter(v=>stk(v)).map(v=>v.color).join(', ')} | সাইজ: ${sizesOf(p).join(', ')}`:' | স্টক নেই'}\n${location.origin}/product/${p.slug}`;
+const KEYS=[[['থ্রি পিস','থ্রি-পিস','থ্রিপিস','three'],'three'],[['কো-অর্ড','কো অর্ড','কোঅর্ড','co-ord','coord','co ord'],'co-ord'],[['গার্লস','girls','মেয়েদের','মেয়ে'],'girls'],[['কিডস','kids','বাচ্চা','শিশু'],'kids'],[['পাঞ্জাবি','punjabi'],'punjabi']];
+function localAnswer(raw){
+ const q=BD(raw.toLowerCase().replace(/[?।,!]/g,' ').replace(/\s+/g,' ').trim()),L=P||[],wan=String(S.wa||'').replace(/\D/g,''),W=wan?`\nWhatsApp: https://wa.me/${wan}`:'';
+ const pay=['ক্যাশ অন ডেলিভারি',S.bkash&&'bKash '+S.bkash,S.nagad&&'Nagad '+S.nagad,S.rocket&&'Rocket '+S.rocket].filter(Boolean);
+ if(q.split(' ').some(w=>['hi','hello','hey'].includes(w))||hs(q,['সালাম','হ্যালো','হাই']))return "ওয়ালাইকুম আসসালাম! আমি Brosha's Closet-এর সহকারী। প্রোডাক্ট, দাম, সাইজ, স্টক, ডেলিভারি, পেমেন্ট বা অর্ডার নিয়ে যেকোনো প্রশ্ন করুন।";
+ if(hs(q,['ডেলিভারি চার্জ','ডেলিভারি খরচ','ডেলিভারি কত','delivery charge','shipping','চার্জ কত','খরচ কত']))return `ডেলিভারি চার্জ: ঢাকা জেলায় ${tk(S.d_in)}, ঢাকার বাইরে ${tk(S.d_out)}। সারা বাংলাদেশে ডেলিভারি হয়।`;
+ if(hs(q,['কবে পাব','কতদিন','কত দিন','কতক্ষণ','সময় লাগ','কবে আসবে','কবে হাতে','কখন পাব','delivery time']))return S.info?S.info:'অর্ডার করার পর আমাদের টিম ফোন করে নিশ্চিত করবে এবং ডেলিভারির সময় জানাবে। অর্ডারের অবস্থা দেখতে নিচের "অর্ডার ট্র্যাক করুন" ব্যবহার করুন।';
+ if(hs(q,['ট্র্যাক','ট্রাক','track','অর্ডারের অবস্থা','অর্ডার কোথায়','স্ট্যাটাস','আমার অর্ডার']))return `অর্ডারের অবস্থা দেখতে এই লিংকে যান: ${location.origin}/#/track\nসেখানে অর্ডার নম্বর (যেমন BC-1001) ও অর্ডারের মোবাইল নম্বর দিন।`;
+ if(hs(q,['কীভাবে অর্ডার','কিভাবে অর্ডার','অর্ডার করব','অর্ডার করতে','অর্ডার দিব','অর্ডার দেব','how to order','অর্ডার কর']))return '১) পছন্দের প্রোডাক্ট খুলে রঙ ও সাইজ বাছুন\n২) "অর্ডার নাও" বা "কার্টে যোগ করুন" চাপুন\n৩) নাম, মোবাইল নম্বর ও ঠিকানা দিন\n৪) পেমেন্ট বেছে "অর্ডার নিশ্চিত করুন" চাপুন। আমরা ফোনে যোগাযোগ করব।';
+ if(hs(q,['পেমেন্ট','বিকাশ','bkash','নগদ','nagad','রকেট','rocket','cod','ক্যাশ অন','টাকা পাঠা','টাকা দিব','টাকা দেব']))return 'পেমেন্টের উপায়: '+pay.join(', ')+'।'+(pay.length>1?' মোবাইল পেমেন্টে Send Money করে অর্ডারের সময় TrxID লিখতে হবে।':'');
+ if(hs(q,['রিটার্ন','ফেরত','এক্সচেঞ্জ','exchange','return','বদলে']))return S.info?S.info:'রিটার্ন ও এক্সচেঞ্জের নিয়ম আমাদের টিম আপনাকে জানাবে।'+W;
+ if(hs(q,['রিভিউ','review','রেটিং']))return 'যারা প্রোডাক্ট কিনে হাতে পেয়েছেন, তারা প্রোডাক্ট পেজের নিচে "রিভিউ লিখুন" বাটনে অর্ডার নম্বর ও মোবাইল নম্বর দিয়ে রিভিউ দিতে পারেন।';
+ if(hs(q,['যোগাযোগ','ফোন','contact','whatsapp','হোয়াটসঅ্যাপ','ফেসবুক','facebook','কথা বলতে']))return 'যোগাযোগ:'+W+(S.fb?'\nFacebook: '+S.fb:'');
+ if(hs(q,['ঠিকানা','দোকান কোথায়','কোথায় দোকান','লোকেশন','location','address','খোলা']))return 'দোকান ২৫, পূর্বানী প্লাজা, কোনাপাড়া, ডেমরা, ঢাকা। সারা বাংলাদেশে অনলাইনে ডেলিভারি হয়।'+(S.info?'\n'+S.info:'');
+ if(hs(q,['অফার','ডিসকাউন্ট','ছাড়','sale','offer','সেল'])){const o=L.filter(p=>disc(p));return o.length?'বর্তমান অফার:\n'+o.slice(0,5).map(pline).join('\n'):'এখন নির্দিষ্ট কোনো অফার নেই। হোমপেজে সব প্রোডাক্ট দেখুন।'}
+ let f=L,filt=false;
+ KEYS.forEach(([al,k])=>{if(hs(q,al)){f=f.filter(p=>nh(p).includes(k));filt=true}});
+ const num=+((q.match(/\d{3,6}/)||[])[0]||0);
+ if(num&&hs(q,['মধ্যে','কম','under','below','নিচে','পর্যন্ত','বাজেট','budget','টাকার'])){f=f.filter(p=>p.price<=num);filt=true}
+ const sz=(q.match(/\b(xxxl|xxl|xl|xs|s|m|l)\b/)||[])[1];
+ if(sz){f=f.filter(p=>vs(p).some(v=>+(v.sizes||{})[sz.toUpperCase()]>0));filt=true}
+ const col=[...new Set(L.flatMap(p=>vs(p).map(v=>(v.color||'').toLowerCase())))].filter(c=>c&&q.includes(c));
+ if(col.length){f=f.filter(p=>vs(p).some(v=>col.includes((v.color||'').toLowerCase())&&stk(v)));filt=true}
+ const nw=q.split(' ').filter(w=>w.length>3&&!/^\d+$/.test(w));
+ if(!filt&&nw.length){const m=L.filter(p=>nw.some(w=>nh(p).includes(w)));if(m.length){f=m;filt=true}}
+ if(filt||hs(q,['প্রোডাক্ট','পণ্য','কালেকশন','আছে','দাম','কত','স্টক','কী কী','কি কি','কোন কোন','products','price','stock','available'])){
+  if(!L.length)return 'এখনো কোনো প্রোডাক্ট যোগ করা হয়নি।';
+  if(!f.length)return 'দুঃখিত, এমন প্রোডাক্ট এখন পাচ্ছি না। অন্য রঙ, সাইজ বা দামে খুঁজে দেখুন।';
+  return (filt?'আপনার জন্য প্রোডাক্ট:\n':'আমাদের প্রোডাক্ট:\n')+f.slice(0,5).map(pline).join('\n')+(f.length>5?`\n...আরও ${f.length-5}টি আছে, হোমপেজে দেখুন।`:'')}
+ return 'আমি ঠিক বুঝতে পারিনি। প্রোডাক্ট, দাম, সাইজ, স্টক, ডেলিভারি, পেমেন্ট বা অর্ডারের নিয়ম নিয়ে লিখে দেখুন। যেমন: "কো-অর্ড সেট ২০০০ টাকার মধ্যে আছে?"'+W}
 /* ---- admin ---- */
-async function admin(){document.body.classList.remove('has-ob');
+async function admin(){
  P=null;const{data:{session}}=await SB.auth.getSession();
  if(!session){$('#app').innerHTML=`<div class="login"><h2>Admin Login</h2><input id="em" type="email" placeholder="Email"><input id="pw" type="password" placeholder="Password"><button class="btn" onclick="login()">Login</button><a class="btn ol" href="#/">সাইটে ফিরুন</a></div>`;return}
  $('#app').innerHTML=`<header><div class="logo">Admin</div><button class="hb" style="margin-left:auto" onclick="SB.auth.signOut().then(admin)">Logout</button></header><div class="chips">${[['d','ড্যাশবোর্ড'],['p','প্রোডাক্ট'],['c','ক্যাটাগরি'],['o','অর্ডার'],['r','রিভিউ'],['s','সেটিংস']].map(t=>`<button class="chip" id="tab${t[0]}" onclick="tab('${t[0]}')">${t[1]}</button>`).join('')}<button class="chip" onclick="location.hash='/'">সাইট দেখুন</button></div><main id="tb"></main>`;tab('d')}
