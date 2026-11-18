@@ -23,10 +23,13 @@ header input{flex:1;min-width:0;margin:0;padding:8px 14px;border:0;border-radius
 .opt{padding:4px 0 8px;flex-wrap:wrap}
 .chip{flex:none;border:1px solid var(--k);background:var(--w);color:var(--k);padding:6px 14px;border-radius:20px;font:inherit;cursor:pointer}
 .chip.on{background:var(--k);color:var(--g)}.chip:disabled{opacity:.4;text-decoration:line-through}
-main{padding:6px 12px 30px;max-width:1000px;margin:auto}.pp{max-width:640px}
+main{padding:6px 12px 30px;max-width:1700px;margin:auto}.pp{max-width:640px}
+@media(min-width:1000px){main{padding:6px 40px 40px}}
 .st{margin:18px 0 10px;font-size:19px;border-left:4px solid var(--g);padding-left:8px}
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
 @media(min-width:760px){.grid{grid-template-columns:repeat(4,1fr)}}
+@media(min-width:1100px){.grid{grid-template-columns:repeat(5,1fr)}}
+@media(min-width:1500px){.grid{grid-template-columns:repeat(6,1fr)}}
 .card{display:block;color:inherit;text-decoration:none;border:1px solid var(--l);cursor:pointer;background:var(--w)}
 .ph{position:relative}.ph>img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;background:var(--l)}
 .bd{position:absolute;left:6px;top:6px;background:var(--k);color:var(--g);padding:1px 8px;font-size:12px}
@@ -57,6 +60,10 @@ textarea{min-height:70px}
 footer{background:var(--k);color:#ccc;text-align:center;padding:22px 16px;font-size:13px;line-height:1.9}footer a{color:var(--g);margin:0 6px}
 .fab{position:fixed;right:14px;bottom:16px;background:var(--k);color:var(--g);border:1px solid var(--g);padding:12px 18px;border-radius:30px;font:inherit;font-weight:700;z-index:8;cursor:pointer}
 .rt{color:var(--g);font-weight:600}
+.logo{display:flex;align-items:center;gap:8px}.logo img{height:34px;width:auto;border-radius:4px}
+.hero.hb2{min-height:200px;display:flex;flex-direction:column;justify-content:center;align-items:center;background-size:cover;background-position:center;color:#fff;border:0}
+@media(min-width:900px){.hero h1{font-size:40px}.hero.hb2{min-height:380px}
+.pp.pd,.pp.cp{max-width:1300px;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}.pg{position:sticky;top:72px}.rvw{grid-column:1/-1}.gal img{max-height:78vh}}
 #modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:flex-end;justify-content:center;z-index:20}#modal.show{display:flex}
 .sheet{background:var(--w);width:100%;max-width:520px;max-height:92vh;overflow:auto;padding:18px 16px 24px;position:relative;border-top:3px solid var(--g)}
 .x{position:absolute;right:10px;top:8px;background:none;border:0;font-size:22px;cursor:pointer}
@@ -76,7 +83,7 @@ footer{background:var(--k);color:#ccc;text-align:center;padding:22px 16px;font-s
 const SB=supabase.createClient('https://guejjcyzbmagriskgmop.supabase.co','sb_publishable_5uNlCWo0ZoGVNAyEwZ1jTw_-BDU2gVi');
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),tk=n=>'৳'+Number(n||0).toLocaleString('en-US');
 const DV={Dhaka:['Dhaka','Faridpur','Gazipur','Gopalganj','Kishoreganj','Madaripur','Manikganj','Munshiganj','Narayanganj','Narsingdi','Rajbari','Shariatpur','Tangail'],Chattogram:['Chattogram','Bandarban','Brahmanbaria','Chandpur','Cumilla','Cox\'s Bazar','Feni','Khagrachhari','Lakshmipur','Noakhali','Rangamati'],Rajshahi:['Rajshahi','Bogura','Chapainawabganj','Joypurhat','Naogaon','Natore','Pabna','Sirajganj'],Khulna:['Khulna','Bagerhat','Chuadanga','Jashore','Jhenaidah','Kushtia','Magura','Meherpur','Narail','Satkhira'],Barishal:['Barishal','Barguna','Bhola','Jhalokati','Patuakhali','Pirojpur'],Sylhet:['Sylhet','Habiganj','Moulvibazar','Sunamganj'],Rangpur:['Rangpur','Dinajpur','Gaibandha','Kurigram','Lalmonirhat','Nilphamari','Panchagarh','Thakurgaon'],Mymensingh:['Mymensingh','Jamalpur','Netrokona','Sherpur']};
-let P=null,CT=[],S={wa:'',bkash:'',nagad:'',rocket:'',d_in:'60',d_out:'120',hero:'',fb:'',info:''},cart=[],cat='',q='',sel={},hist=[],ed=null,AP=[],OL=[],OF='';
+let P=null,CT=[],S={wa:'',bkash:'',nagad:'',rocket:'',d_in:'60',d_out:'120',hero:'',fb:'',info:'',logo:'',banner:''},cart=[],cat='',q='',sel={},hist=[],ed=null,AP=[],OL=[],OF='';
 try{cart=JSON.parse(localStorage.getItem('cart2')||'[]')}catch(e){}
 const save=()=>{try{localStorage.setItem('cart2',JSON.stringify(cart))}catch(e){}const c=$('#cc');if(c)c.textContent=cart.reduce((a,x)=>a+x.q,0)};
 const sub=()=>cart.reduce((a,c)=>a+c.price*c.q,0),stk=v=>Object.values(v.sizes||{}).reduce((a,n)=>a+(+n||0),0);
@@ -93,28 +100,28 @@ const closeM=()=>$('#modal').classList.remove('show');
 function share(slug){const u=location.origin+'/product/'+slug,t=encodeURIComponent(u),pr=(P||[]).find(x=>x.slug==slug),tw=encodeURIComponent((pr?pr.name+"\n":'')+u);modal(`<h2>বন্ধুদের শেয়ার করুন</h2><a class="btn" target="_blank" href="https://wa.me/?text=${tw}">WhatsApp-এ বন্ধুদের পাঠান</a><a class="btn" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=${t}">Facebook</a><button class="btn ol" onclick="navigator.clipboard.writeText('${u}').then(()=>alert('লিংক কপি হয়েছে'))">লিংক কপি করুন</button>${navigator.share?`<button class="btn ol" onclick="navigator.share({url:'${u}'})">অন্যান্য অ্যাপে</button>`:''}`)}
 
 /* ---- storefront ---- */
-const frame=()=>`<header><div class="logo" onclick="location.hash='/'">Brosha's Closet</div><input placeholder="প্রোডাক্ট খুঁজুন" oninput="doSearch(this.value)"><button class="hb" onclick="location.hash='/cart'">কার্ট <span id="cc">0</span></button></header><div id="v"></div><footer>দোকান ২৫, পূর্বানী প্লাজা, কোনাপাড়া, ডেমরা, ঢাকা<br>সারা বাংলাদেশে ডেলিভারি<br><a href="#/track">অর্ডার ট্র্যাক করুন</a>${S.fb?`<a href="${esc(S.fb)}" target="_blank">Facebook</a>`:''}${S.wa?`<a href="https://wa.me/${esc(S.wa)}" target="_blank">WhatsApp</a>`:''}<a href="#admin">Admin</a><br><small>v2.6</small></footer><button class="fab" onclick="openChat()">সাহায্য</button>`;
+const frame=()=>`<header><div class="logo" onclick="location.hash='/'">${S.logo?`<img src="${esc(S.logo)}" alt="Brosha's Closet">`:''}<span>Brosha's Closet</span></div><input placeholder="প্রোডাক্ট খুঁজুন" oninput="doSearch(this.value)"><button class="hb" onclick="location.hash='/cart'">কার্ট <span id="cc">0</span></button></header><div id="v"></div><footer>দোকান ২৫, পূর্বানী প্লাজা, কোনাপাড়া, ডেমরা, ঢাকা<br>সারা বাংলাদেশে ডেলিভারি<br><a href="#/track">অর্ডার ট্র্যাক করুন</a>${S.fb?`<a href="${esc(S.fb)}" target="_blank">Facebook</a>`:''}${S.wa?`<a href="https://wa.me/${esc(S.wa)}" target="_blank">WhatsApp</a>`:''}<a href="#admin">Admin</a><br><small>v2.9</small></footer><button class="fab" onclick="openChat()">সাহায্য</button>`;
 async function shop(path){
  if(!$('#v'))$('#app').innerHTML=frame();
- if(!P){$('#v').innerHTML='<p class="empty">লোড হচ্ছে...</p>';await loadS();await loadP()}
+ if(!P){$('#v').innerHTML='<p class="empty">লোড হচ্ছে...</p>';await loadS();await loadP();$('#app').innerHTML=frame()}
  scrollTo(0,0);const m=path.match(/^\/p\/(.+)/);
  m?prod(m[1]):path=='/cart'?cartPg():path=='/track'?trackPg():home();save()}
 const card=p=>`<a class="card" href="/product/${p.slug}" onclick="event.preventDefault();location.hash='/p/${p.slug}'"><div class="ph"><img loading="lazy" src="${esc(img(p))}" alt="${esc(p.name)}">${disc(p)?`<b class="bd">-${disc(p)}%</b>`:''}<button class="sh" onclick="event.preventDefault();event.stopPropagation();share('${p.slug}')">শেয়ার</button></div><div class="inf"><div class="nm">${esc(p.name)}</div><div class="pr">${tk(p.price)}${p.old_price?`<s>${tk(p.old_price)}</s>`:''}</div>${stars(p)}<div class="cl">${left(p)?esc(vs(p).map(v=>v.color).filter(Boolean).join(' · ')):'<span class="out">স্টক নেই</span>'}</div></div></a>`;
 function home(){document.title="Brosha's Closet | থ্রি-পিস, কো-অর্ড সেট, গার্লস ও কিডস ফ্যাশন - ডেমরা, ঢাকা";
  const f=P.filter(p=>(!cat||p.category_id==cat)&&(!q||hay(p).includes(q.trim().toLowerCase()))),rich=!cat&&!q;
  const g=(t,l)=>l.length?`<h2 class="st">${t}</h2><div class="grid">${l.map(card).join('')}</div>`:'';
- $('#v').innerHTML=`${rich?`<div class="hero"><h1>${esc(S.hero||"Brosha's Closet")}</h1><p>সারা বাংলাদেশে ডেলিভারি</p></div>`:''}<div class="chips"><button class="chip ${cat?'':'on'}" onclick="cat='';home()">সব</button>${CT.map(c=>`<button class="chip ${cat==c.id?'on':''}" onclick="cat='${c.id}';home()">${esc(c.name)}</button>`).join('')}</div><main>${rich?g('নতুন এসেছে',f.slice(0,8))+g('বেস্ট সেলার',f.filter(p=>p.best_seller))+g('বিশেষ অফার',f.filter(p=>disc(p)))+g('ফিচার্ড',f.filter(p=>p.featured))+g('সব প্রোডাক্ট',f):g(esc(cat?catName(cat):'ফলাফল'),f)}${f.length?'':'<p class="empty">কোনো প্রোডাক্ট পাওয়া যায়নি।</p>'}</main>`}
+ $('#v').innerHTML=`${rich?`<div class="hero${S.banner?' hb2':''}"${S.banner?` style="background-image:linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.35)),url('${esc(S.banner)}')"`:''}>${S.hero||!S.banner?`<h1>${esc(S.hero||"Brosha's Closet")}</h1>`:''}</div>`:''}<div class="chips"><button class="chip ${cat?'':'on'}" onclick="cat='';home()">সব</button>${CT.map(c=>`<button class="chip ${cat==c.id?'on':''}" onclick="cat='${c.id}';home()">${esc(c.name)}</button>`).join('')}</div><main>${rich?g('নতুন এসেছে',f.slice(0,8))+g('বেস্ট সেলার',f.filter(p=>p.best_seller))+g('বিশেষ অফার',f.filter(p=>disc(p)))+g('ফিচার্ড',f.filter(p=>p.featured))+g('সব প্রোডাক্ট',f):g(esc(cat?catName(cat):'ফলাফল'),f)}${f.length?'':'<p class="empty">কোনো প্রোডাক্ট পাওয়া যায়নি।</p>'}</main>`}
 const hay=p=>[p.name,p.description,catName(p.category_id),...vs(p).map(v=>v.color)].join(' ').toLowerCase();
 function doSearch(v){q=v;cat='';location.hash.length>2?location.hash='/':home()}
 function prod(slug){
  const p=P.find(x=>x.slug==slug);if(!p)return $('#v').innerHTML='<p class="empty">প্রোডাক্ট পাওয়া যায়নি।</p>';
  document.title=p.name+" - Brosha's Closet";sel={p,v:Math.max(0,vs(p).findIndex(v=>stk(v)>0)),s:'',n:1};pv()}
 function pv(){
- const{p,v:vi,s,n}=sel,V=vs(p),v=V[vi],price=v.price??p.price,mx=s?+v.sizes[s]:1;
- $('#v').innerHTML=`<main class="pp"><div class="gal" id="gal" onscroll="gs()">${v.images.map((u,i)=>`<img src="${esc(u)}" alt="${esc(p.name)} ${esc(v.color)}" onclick="zoom(${i})">`).join('')}</div>${v.images.length>1?`<div class="th">${v.images.map((u,i)=>`<button class="sw ${i?'':'on'}" onclick="go(${i})"><img src="${esc(u)}" alt=""></button>`).join('')}</div>`:''}<h2>${esc(p.name)}</h2><div class="pr big">${tk(price)}${p.old_price?`<s>${tk(p.old_price)}</s><b class="bd2">-${disc(p)}%</b>`:''}</div><label>রঙ: <b>${esc(v.color||'Default')}</b></label><div class="opt">${V.map((x,i)=>`<button class="chip ${i==vi?'on':''}" ${stk(x)?'':'disabled'} onclick="sel.v=${i};sel.s='';sel.n=1;pv()">${esc(x.color||'Default')}${stk(x)?'':' (শেষ)'}</button>`).join('')}</div><label>সাইজ</label><div class="opt">${szs(v).map(([k,c])=>`<button class="chip ${k==s?'on':''}" ${+c>0?'':'disabled'} onclick="sel.s='${esc(k)}';sel.n=1;pv()">${esc(k)}</button>`).join('')}</div>${s?`<div class="hint">স্টকে আছে: ${mx}টি</div>`:''}<label>পরিমাণ</label><div class="q"><button onclick="sel.n=Math.max(1,sel.n-1);pv()">−</button><b>${n}</b><button onclick="sel.n=Math.min(${mx},sel.n+1);pv()">+</button></div><div class="two"><button class="btn" onclick="addC(false)">কার্টে যোগ করুন</button><button class="btn gd" onclick="addC(true)">অর্ডার নাও</button></div><button class="btn ol" onclick="share('${p.slug}')">বন্ধুদের শেয়ার করুন</button><h3>বিবরণ</h3><p class="desc">${esc(p.description||'')}</p><div id="rv"></div></main>`;drawRev()}
+ const{p,v:vi,s,n}=sel,V=vs(p),v=V[vi],price=v.price??p.price,mx=s?+v.sizes[s]:1,rel=P.filter(x=>x.id!=p.id).sort((a,b)=>(b.category_id==p.category_id)-(a.category_id==p.category_id)).slice(0,8);
+ $('#v').innerHTML=`<main class="pp pd"><div class="pg"><div class="gal" id="gal" onscroll="gs()">${v.images.map((u,i)=>`<img src="${esc(u)}" alt="${esc(p.name)} ${esc(v.color)}" onclick="zoom(${i})">`).join('')}</div>${v.images.length>1?`<div class="th">${v.images.map((u,i)=>`<button class="sw ${i?'':'on'}" onclick="go(${i})"><img src="${esc(u)}" alt=""></button>`).join('')}</div>`:''}</div><div class="pi"><h2>${esc(p.name)}</h2>${stars(p)}<div class="pr big">${tk(price)}${p.old_price?`<s>${tk(p.old_price)}</s><b class="bd2">-${disc(p)}%</b>`:''}</div><label>রঙ: <b>${esc(v.color||'Default')}</b></label><div class="opt">${V.map((x,i)=>`<button class="chip ${i==vi?'on':''}" ${stk(x)?'':'disabled'} onclick="sel.v=${i};sel.s='';sel.n=1;pv()">${esc(x.color||'Default')}${stk(x)?'':' (শেষ)'}</button>`).join('')}</div><label>সাইজ</label><div class="opt">${szs(v).map(([k,c])=>`<button class="chip ${k==s?'on':''}" ${+c>0?'':'disabled'} onclick="sel.s='${esc(k)}';sel.n=1;pv()">${esc(k)}</button>`).join('')}</div>${s?`<div class="hint">স্টকে আছে: ${mx}টি</div>`:''}<label>পরিমাণ</label><div class="q"><button onclick="sel.n=Math.max(1,sel.n-1);pv()">−</button><b>${n}</b><button onclick="sel.n=Math.min(${mx},sel.n+1);pv()">+</button></div><div class="two"><button class="btn" onclick="addC(false)">কার্টে যোগ করুন</button><button class="btn gd" onclick="addC(true)">অর্ডার নাও</button></div><button class="btn ol" onclick="share('${p.slug}')">বন্ধুদের শেয়ার করুন</button><h3>বিবরণ</h3><p class="desc">${esc(p.description||'')}</p></div><div id="rv" class="rvw"></div></main>${rel.length?`<main><h2 class="st">আরও প্রোডাক্ট দেখুন</h2><div class="grid">${rel.map(card).join('')}</div></main>`:''}`;drawRev()}
 function go(i){const g=$('#gal');g.scrollTo({left:i*g.clientWidth,behavior:'smooth'})}
 function gs(){const g=$('#gal'),i=Math.round(g.scrollLeft/g.clientWidth);document.querySelectorAll('.th .sw').forEach((b,j)=>b.classList.toggle('on',j==i))}
-function zoom(i){const d=document.createElement('div');d.id='lb';d.innerHTML=`<button class="x" onclick="lbx()">✕</button><div class="lbs"><img src="${esc(vs(sel.p)[sel.v].images[i])}" alt="" onclick="this.classList.toggle('z')"></div><p>ট্যাপ করলে জুম হবে, আঙুল দিয়ে সরিয়ে দেখুন</p>`;document.body.appendChild(d)}
+function zoom(i){const d=document.createElement('div');d.id='lb';d.innerHTML=`<button class="x" onclick="lbx()">✕</button><div class="lbs"><img src="${esc(typeof i=='string'?i:vs(sel.p)[sel.v].images[i])}" alt="" onclick="this.classList.toggle('z')"></div><p>ট্যাপ করলে জুম হবে, আঙুল দিয়ে সরিয়ে দেখুন</p>`;document.body.appendChild(d)}
 const lbx=()=>{const d=$('#lb');d&&d.remove()};
 function addC(buy){
  const{p,v:vi,s,n}=sel,v=vs(p)[vi];if(!s)return alert('সাইজ বেছে নিন');
@@ -124,29 +131,36 @@ function addC(buy){
 
 /* ---- reviews (only buyers whose order is Delivered can write) ---- */
 async function loadRT(){try{const{data}=await SB.from('reviews').select('product_id,rating').eq('is_approved',true);Object.keys(RT).forEach(k=>delete RT[k]);(data||[]).forEach(r=>{const t=RT[r.product_id]||(RT[r.product_id]={s:0,n:0});t.s+=r.rating;t.n++;t.a=(t.s/t.n).toFixed(1)})}catch(e){}}
-async function loadRev(id){try{const{data}=await SB.from('reviews').select('name,rating,comment,created_at').eq('product_id',id).eq('is_approved',true).order('created_at',{ascending:false}).limit(50);RV[id]=data||[]}catch(e){RV[id]=[]}}
+async function loadRev(id){try{const{data}=await SB.from('reviews').select('name,rating,comment,image_url,created_at').eq('product_id',id).eq('is_approved',true).order('created_at',{ascending:false}).limit(50);RV[id]=data||[]}catch(e){RV[id]=[]}}
 const star=n=>'★'.repeat(n)+'☆'.repeat(5-n);
 function drawRev(){
  const e=$('#rv');if(!e||!sel.p)return;const id=sel.p.id;
  if(!RV[id]){loadRev(id).then(drawRev);return}
  const L=RV[id],avg=L.length?(L.reduce((a,r)=>a+r.rating,0)/L.length).toFixed(1):0;
- e.innerHTML=`<h3>ক্রেতাদের রিভিউ ${L.length?`<span class="rt">★ ${avg} (${L.length})</span>`:''}</h3>${L.map(r=>`<div class="ci" style="display:block"><span class="rt">${star(r.rating)}</span> <b>${esc(r.name)}</b> <span class="hint">যাচাইকৃত ক্রেতা</span><br>${esc(r.comment||'')}</div>`).join('')||'<p class="hint">এখনো কোনো রিভিউ নেই।</p>'}<button class="btn ol" onclick="revForm()">রিভিউ লিখুন</button>`}
+ e.innerHTML=`<h3>ক্রেতাদের রিভিউ ${L.length?`<span class="rt">★ ${avg} (${L.length})</span>`:''}</h3>${L.map(r=>`<div class="ci" style="display:block"><span class="rt">${star(r.rating)}</span> <b>${esc(r.name)}</b> <span class="hint">যাচাইকৃত ক্রেতা</span><br>${esc(r.comment||'')}${r.image_url?`<br><img src="${esc(r.image_url)}" alt="ক্রেতার তোলা ছবি" style="width:96px;height:96px;object-fit:cover;margin-top:6px;cursor:zoom-in" onclick="zoom('${esc(r.image_url)}')">`:''}</div>`).join('')||'<p class="hint">এখনো কোনো রিভিউ নেই।</p>'}<button class="btn ol" onclick="revForm()">রিভিউ লিখুন</button>`}
 function revForm(){
- modal(`<h2>রিভিউ লিখুন</h2><p class="hint">যারা এই প্রোডাক্ট কিনে হাতে পেয়েছেন, শুধু তারাই রিভিউ দিতে পারবেন।</p><input id="ro" placeholder="অর্ডার নম্বর (যেমন BC-1001)"><input id="rp" type="tel" placeholder="অর্ডারের মোবাইল নম্বর"><label>রেটিং</label><select id="rr">${[5,4,3,2,1].map(n=>`<option value="${n}">${star(n)}</option>`).join('')}</select><input id="rn" placeholder="আপনার নাম"><textarea id="rc" placeholder="আপনার অভিজ্ঞতা লিখুন"></textarea><button class="btn" id="rb" onclick="sendRev()">রিভিউ জমা দিন</button>`)}
+ modal(`<h2>রিভিউ লিখুন</h2><p class="hint">যারা এই প্রোডাক্ট কিনে হাতে পেয়েছেন, শুধু তারাই রিভিউ দিতে পারবেন।</p><input id="ro" placeholder="অর্ডার নম্বর (যেমন BC-1001)"><input id="rp" type="tel" placeholder="অর্ডারের মোবাইল নম্বর"><label>রেটিং</label><select id="rr">${[5,4,3,2,1].map(n=>`<option value="${n}">${star(n)}</option>`).join('')}</select><input id="rn" placeholder="আপনার নাম"><textarea id="rc" placeholder="আপনার অভিজ্ঞতা লিখুন"></textarea><label>প্রোডাক্টের ছবি (ঐচ্ছিক)</label><input id="rf" type="file" accept="image/*"><button class="btn" id="rb" onclick="sendRev()">রিভিউ জমা দিন</button>`)}
+const RM={ok:'ধন্যবাদ! আপনার রিভিউ জমা হয়েছে।',no_order:'এই অর্ডার নম্বর ও মোবাইল নম্বরে কোনো অর্ডার পাওয়া যায়নি।',not_delivered:'অর্ডার ডেলিভারি হওয়ার পর রিভিউ দিতে পারবেন।',no_product:'এই অর্ডারে এই প্রোডাক্টটি নেই।',duplicate:'এই অর্ডারের জন্য আপনি আগেই রিভিউ দিয়েছেন।'};
 async function sendRev(){
  const g=id=>$('#'+id).value.trim(),n=+g('ro').replace(/\D/g,''),ph=g('rp');
  if(!n||!/^01\d{9}$/.test(ph)||g('rn').length<2)return alert('অর্ডার নম্বর, মোবাইল নম্বর ও আপনার নাম দিন।');
- const b=$('#rb');b.disabled=true;
- const{data,error}=await SB.rpc('submit_review',{n,p:ph,pid:sel.p.id,r:+g('rr'),nm:g('rn'),cm:g('rc')});b.disabled=false;
- if(error)return alert('রিভিউ জমা হয়নি, আবার চেষ্টা করুন।');
- const M={ok:'ধন্যবাদ! আপনার রিভিউ জমা হয়েছে।',no_order:'এই অর্ডার নম্বর ও মোবাইল নম্বরে কোনো অর্ডার পাওয়া যায়নি।',not_delivered:'অর্ডার ডেলিভারি হওয়ার পর রিভিউ দিতে পারবেন।',no_product:'এই অর্ডারে এই প্রোডাক্টটি নেই।',duplicate:'এই অর্ডারের জন্য আপনি আগেই রিভিউ দিয়েছেন।'};
- alert(M[data]||'রিভিউ জমা হয়নি।');
+ const b=$('#rb');b.disabled=true;b.textContent='জমা হচ্ছে...';
+ const done=m=>{b.disabled=false;b.textContent='রিভিউ জমা দিন';alert(m)},base={n,p:ph,pid:sel.p.id};
+ const ck=await SB.rpc('review_check',base);
+ if(ck.error)return done('রিভিউ জমা হয়নি, আবার চেষ্টা করুন।');
+ if(ck.data!='ok')return done(RM[ck.data]||'রিভিউ জমা হয়নি।');
+ let img=null;const f=$('#rf').files[0];
+ if(f){const path=Date.now().toString(36)+Math.random().toString(36).slice(2,10)+'.jpg',u=await SB.storage.from('reviews').upload(path,await shrink(f,900),{contentType:'image/jpeg'});
+  if(u.error)return done('ছবি আপলোড হয়নি। ছবি ছাড়া আবার চেষ্টা করুন।');img=SB.storage.from('reviews').getPublicUrl(path).data.publicUrl}
+ const{data,error}=await SB.rpc('submit_review',{...base,r:+g('rr'),nm:g('rn'),cm:g('rc'),img});
+ if(error)return done('রিভিউ জমা হয়নি, আবার চেষ্টা করুন।');
+ done(RM[data]||'রিভিউ জমা হয়নি।');
  if(data=='ok'){closeM();delete RV[sel.p.id];await loadRT();drawRev()}}
 /* ---- cart + order ---- */
 function cartPg(){
  if(!cart.length)return $('#v').innerHTML='<main class="pp"><h2>কার্ট খালি</h2><a class="btn" href="#/">কেনাকাটা শুরু করুন</a></main>';
  const pays=['COD',...['bKash','Nagad','Rocket'].filter(k=>S[k.toLowerCase()])];
- $('#v').innerHTML=`<main class="pp"><h2>আপনার কার্ট</h2>${cart.map((c,i)=>`<div class="ci"><img src="${esc(c.img)}" alt=""><div><b>${esc(c.name)}</b><br>${esc(c.color)} ${esc(c.size)} | ${tk(c.price)}</div><div class="q"><button onclick="cq(${i},-1)">−</button>${c.q}<button onclick="cq(${i},1)">+</button></div></div>`).join('')}<div class="tot">সাব-টোটাল: <b>${tk(sub())}</b></div><h3>ডেলিভারির তথ্য</h3><input id="nm" placeholder="আপনার নাম"><input id="ph" type="tel" placeholder="মোবাইল নম্বর (01XXXXXXXXX)"><input id="al" type="tel" placeholder="বিকল্প নম্বর (ঐচ্ছিক)"><select id="dv" onchange="dvc()">${Object.keys(DV).map(d=>`<option>${d}</option>`).join('')}</select><select id="ds" onchange="tt()"></select><input id="th" placeholder="থানা / উপজেলা"><textarea id="ad" placeholder="সম্পূর্ণ ঠিকানা"></textarea><textarea id="nt" placeholder="ডেলিভারি নির্দেশনা (ঐচ্ছিক)" style="min-height:50px"></textarea><label>পেমেন্ট</label><select id="pm" onchange="pmc()">${pays.map(p=>`<option value="${p}">${p=='COD'?'ক্যাশ অন ডেলিভারি':p}</option>`).join('')}</select><div id="pi"></div><div class="tot">ডেলিভারি: <b id="dl"></b><br>সর্বমোট: <b id="tt"></b></div><button class="btn" id="ob" onclick="order()">অর্ডার নিশ্চিত করুন</button></main>`;dvc()}
+ $('#v').innerHTML=`<main class="pp cp"><div><h2>আপনার কার্ট</h2>${cart.map((c,i)=>`<div class="ci"><img src="${esc(c.img)}" alt=""><div><b>${esc(c.name)}</b><br>${esc(c.color)} ${esc(c.size)} | ${tk(c.price)}</div><div class="q"><button onclick="cq(${i},-1)">−</button>${c.q}<button onclick="cq(${i},1)">+</button></div></div>`).join('')}<div class="tot">সাব-টোটাল: <b>${tk(sub())}</b></div></div><div><h3>ডেলিভারির তথ্য</h3><input id="nm" placeholder="আপনার নাম"><input id="ph" type="tel" placeholder="মোবাইল নম্বর (01XXXXXXXXX)"><input id="al" type="tel" placeholder="বিকল্প নম্বর (ঐচ্ছিক)"><select id="dv" onchange="dvc()">${Object.keys(DV).map(d=>`<option>${d}</option>`).join('')}</select><select id="ds" onchange="tt()"></select><input id="th" placeholder="থানা / উপজেলা"><textarea id="ad" placeholder="সম্পূর্ণ ঠিকানা"></textarea><textarea id="nt" placeholder="ডেলিভারি নির্দেশনা (ঐচ্ছিক)" style="min-height:50px"></textarea><label>পেমেন্ট</label><select id="pm" onchange="pmc()">${pays.map(p=>`<option value="${p}">${p=='COD'?'ক্যাশ অন ডেলিভারি':p}</option>`).join('')}</select><div id="pi"></div><div class="tot">ডেলিভারি: <b id="dl"></b><br>সর্বমোট: <b id="tt"></b></div><button class="btn" id="ob" onclick="order()">অর্ডার নিশ্চিত করুন</button></div></main>`;dvc()}
 function cq(i,d){const c=cart[i];c.q=Math.min(c.max,c.q+d);if(c.q<1)cart.splice(i,1);save();cartPg()}
 function dvc(){$('#ds').innerHTML=DV[$('#dv').value].map(d=>`<option>${d}</option>`).join('');tt()}
 function tt(){const f=fee($('#ds').value);$('#dl').textContent=tk(f);$('#tt').textContent=tk(sub()+f)}
@@ -188,7 +202,16 @@ const KEYS=[[['থ্রি পিস','থ্রি-পিস','থ্রিপ
 function localAnswer(raw){
  const q=BD(raw.toLowerCase().replace(/[?।,!]/g,' ').replace(/\s+/g,' ').trim()),L=P||[],wan=String(S.wa||'').replace(/\D/g,''),W=wan?`\nWhatsApp: https://wa.me/${wan}`:'';
  const pay=['ক্যাশ অন ডেলিভারি',S.bkash&&'bKash '+S.bkash,S.nagad&&'Nagad '+S.nagad,S.rocket&&'Rocket '+S.rocket].filter(Boolean);
- if(q.split(' ').some(w=>['hi','hello','hey'].includes(w))||hs(q,['সালাম','হ্যালো','হাই']))return "ওয়ালাইকুম আসসালাম! আমি Brosha's Closet-এর সহকারী। প্রোডাক্ট, দাম, সাইজ, স্টক, ডেলিভারি, পেমেন্ট বা অর্ডার নিয়ে যেকোনো প্রশ্ন করুন।";
+ const TALK=[
+  [q=>hs(q,['কেমন আছ','কি অবস্থা','কী অবস্থা','কি খবর','কী খবর','how are you','hru']),'আলহামদুলিল্লাহ, ভালো আছি! 😊 আপনি কেমন আছেন? কোন ধরনের ড্রেস খুঁজছেন বলুন, আমি সাহায্য করছি।'],
+  [q=>hs(q,['ভালো আছি','ভাল আছি','আলহামদুলিল্লাহ']),'শুনে খুব ভালো লাগলো! 😊 আজ কী খুঁজছেন? থ্রি-পিস, কো-অর্ড সেট, গার্লস, কিডস নাকি পাঞ্জাবি?'],
+  [q=>hs(q,['ধন্যবাদ','থ্যাংক','thanks','thank you','শুকরিয়া']),'আপনাকেও ধন্যবাদ! 😊 আর কিছু জানতে চাইলে নির্দ্বিধায় বলুন।'],
+  [q=>hs(q,['আল্লাহ হাফেজ','খোদা হাফেজ','টাটা'])||q=='বাই'||q.split(' ').includes('bye'),'আল্লাহ হাফেজ! আবার আসবেন। 😊'],
+  [q=>q.split(' ').some(w=>['রোবট','বট','মানুষ','এআই','ai','bot','chatbot'].includes(w)),'আমি একটা স্বয়ংক্রিয় সহকারী, মানুষ নই। 😊 তবে দোকানের সব তথ্য আমার কাছে আছে। মানুষের সাথে কথা বলতে চাইলে WhatsApp-এ যোগাযোগ করতে পারেন।'+W],
+  [q=>hs(q,['তুমি কে','আপনি কে','who are you','তোমার নাম','আপনার নাম']),"আমি Brosha's Closet-এর অনলাইন সহকারী। প্রোডাক্ট, দাম, সাইজ, ডেলিভারি, অর্ডার, সবকিছুতে আপনাকে সাহায্য করি। 😊"],
+  [q=>hs(q,['জোক','হাসির']),'জোক বলতে পারি না 😅 তবে আপনার জন্য সুন্দর একটা ড্রেস খুঁজে দিতে পারি!'],
+  [q=>hs(q,['সালাম'])||q.split(' ').some(w=>['হাই','হ্যালো','হেই','hi','hello','hey'].includes(w)),"ওয়ালাইকুম আসসালাম! 😊 স্বাগতম Brosha's Closet-এ। কেমন আছেন? আজ কোন ড্রেসটা দেখবেন?"]];
+ if(q.split(' ').length<=6&&!hs(q.replace(/আছেন|আছো|আছি/g,''),['আছে','দাম','কত','প্রোডাক্ট','ডেলিভারি','অর্ডার','পেমেন্ট','সাইজ','সেট','ড্রেস','থ্রি','কো-অর্ড','কিডস','গার্লস','পাঞ্জাবি','অফার','রিটার্ন'])){const t=TALK.find(([f])=>f(q));if(t)return t[1]}
  if(hs(q,['ডেলিভারি চার্জ','ডেলিভারি খরচ','ডেলিভারি কত','delivery charge','shipping','চার্জ কত','খরচ কত']))return `ডেলিভারি চার্জ: ঢাকা জেলায় ${tk(S.d_in)}, ঢাকার বাইরে ${tk(S.d_out)}। সারা বাংলাদেশে ডেলিভারি হয়।`;
  if(hs(q,['কবে পাব','কতদিন','কত দিন','কতক্ষণ','সময় লাগ','কবে আসবে','কবে হাতে','কখন পাব','delivery time']))return S.info?S.info:'অর্ডার করার পর আমাদের টিম ফোন করে নিশ্চিত করবে এবং ডেলিভারির সময় জানাবে। অর্ডারের অবস্থা দেখতে নিচের "অর্ডার ট্র্যাক করুন" ব্যবহার করুন।';
  if(hs(q,['ট্র্যাক','ট্রাক','track','অর্ডারের অবস্থা','অর্ডার কোথায়','স্ট্যাটাস','আমার অর্ডার']))return `অর্ডারের অবস্থা দেখতে এই লিংকে যান: ${location.origin}/#/track\nসেখানে অর্ডার নম্বর (যেমন BC-1001) ও অর্ডারের মোবাইল নম্বর দিন।`;
@@ -213,7 +236,7 @@ function localAnswer(raw){
   if(!L.length)return 'এখনো কোনো প্রোডাক্ট যোগ করা হয়নি।';
   if(!f.length)return 'দুঃখিত, এমন প্রোডাক্ট এখন পাচ্ছি না। অন্য রঙ, সাইজ বা দামে খুঁজে দেখুন।';
   return (filt?'আপনার জন্য প্রোডাক্ট:\n':'আমাদের প্রোডাক্ট:\n')+f.slice(0,5).map(pline).join('\n')+(f.length>5?`\n...আরও ${f.length-5}টি আছে, হোমপেজে দেখুন।`:'')}
- return 'আমি ঠিক বুঝতে পারিনি। প্রোডাক্ট, দাম, সাইজ, স্টক, ডেলিভারি, পেমেন্ট বা অর্ডারের নিয়ম নিয়ে লিখে দেখুন। যেমন: "কো-অর্ড সেট ২০০০ টাকার মধ্যে আছে?"'+W}
+ return 'হুম, কথাটা ঠিক বুঝতে পারিনি 😅 আপনি কী ধরনের ড্রেস খুঁজছেন? থ্রি-পিস, কো-অর্ড সেট, গার্লস, কিডস নাকি পাঞ্জাবি? দাম, সাইজ, স্টক বা ডেলিভারি নিয়েও জিজ্ঞেস করতে পারেন। যেমন: "কো-অর্ড সেট ৩০০০ টাকার মধ্যে আছে?"'+W}
 /* ---- admin ---- */
 async function admin(){
  P=null;const{data:{session}}=await SB.auth.getSession();
@@ -236,7 +259,7 @@ function aEd(){
 const ai=(i,el)=>{const v=ed.vs[i];[...el.files].slice(0,10-v.imgs.length).forEach(f=>v.imgs.push({f,u:URL.createObjectURL(f)}));aEd()},mk=(i,j)=>{const a=ed.vs[i].imgs;a.unshift(a.splice(j,1)[0]);aEd()},rm=(i,j)=>{ed.vs[i].imgs.splice(j,1);aEd()};
 const parseSz=s=>{const o={};String(s).split(',').forEach(x=>{const[k,n]=x.split(':');if(k&&k.trim())o[k.trim()]=Math.max(0,parseInt(n)||0)});return o};
 const slugify=s=>s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'p';
-function shrink(f){return new Promise(r=>{const i=new Image;i.onload=()=>{const k=Math.min(1,900/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);c.toBlob(r,'image/jpeg',.8)};i.src=URL.createObjectURL(f)})}
+function shrink(f,m=900,t='image/jpeg'){return new Promise(r=>{const i=new Image;i.onload=()=>{const k=Math.min(1,m/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);c.toBlob(r,t,.8)};i.src=URL.createObjectURL(f)})}
 async function saveP(){
  const bt=$('#sv'),fail=m=>{bt.disabled=false;bt.textContent='সেভ করুন';alert(m)},n=ed.name.trim(),pr=+ed.price;
  if(!n||!pr||!ed.category_id)return alert('নাম, দাম ও ক্যাটাগরি দিন।');
@@ -264,7 +287,7 @@ async function renC(id){const n=prompt('নতুন নাম',catName(id));if(
 async function delC(id){if(confirm('ক্যাটাগরি মুছবেন?')){await SB.from('categories').delete().eq('id',id);aCat()}}
 async function aRev(){
  const{data}=await SB.from('reviews').select('*,products(name)').order('created_at',{ascending:false});
- $('#tb').innerHTML=(data||[]).map(r=>`<div class="form"><b>${esc(r.products&&r.products.name)}</b><br><span class="rt">${star(r.rating)}</span> ${esc(r.name)}${r.is_approved?'':' (লুকানো)'}<br>${esc(r.comment||'')}<div class="two"><button class="btn ol" onclick="rvSet('${r.id}',${!r.is_approved})">${r.is_approved?'লুকান':'দেখান'}</button><button class="btn ol" onclick="rvDel('${r.id}')">মুছুন</button></div></div>`).join('')||'<p class="empty">এখনো কোনো রিভিউ নেই।</p>'}
+ $('#tb').innerHTML=(data||[]).map(r=>`<div class="form"><b>${esc(r.products&&r.products.name)}</b><br><span class="rt">${star(r.rating)}</span> ${esc(r.name)}${r.is_approved?'':' (লুকানো)'}<br>${esc(r.comment||'')}${r.image_url?`<br><img src="${esc(r.image_url)}" alt="" style="max-width:140px;margin-top:6px">`:''}<div class="two"><button class="btn ol" onclick="rvSet('${r.id}',${!r.is_approved})">${r.is_approved?'লুকান':'দেখান'}</button><button class="btn ol" onclick="rvDel('${r.id}')">মুছুন</button></div></div>`).join('')||'<p class="empty">এখনো কোনো রিভিউ নেই।</p>'}
 async function rvSet(id,v){await SB.from('reviews').update({is_approved:v}).eq('id',id);aRev()}
 async function rvDel(id){if(confirm('এই রিভিউ মুছে ফেলবেন?')){await SB.from('reviews').delete().eq('id',id);aRev()}}
 const ST=['Pending','Confirmed','Processing','Shipped','Delivered','Cancelled'];
@@ -273,11 +296,24 @@ async function aOrd(){
  $('#tb').innerHTML=`<select onchange="OF=this.value;aOrd()"><option value="">সব অর্ডার (${OL.length})</option>${ST.map(s=>`<option ${s==OF?'selected':''}>${s}</option>`).join('')}</select>`+(L.map(o=>`<div class="form"><b>BC-${o.order_no} | ${esc(o.customer_name)}</b><br><a href="tel:${esc(o.phone)}">${esc(o.phone)}</a>${o.alt_phone?' / '+esc(o.alt_phone):''}<br>${esc(o.address)}, ${esc(o.thana||'')}, ${esc(o.district)}<br>${o.order_items.map(i=>`${esc(i.name)} ${esc(i.color)} ${esc(i.size)} x${i.qty}`).join('<br>')}<br>${o.note?`নোট: ${esc(o.note)}<br>`:''}<b>${tk(o.total)}</b> (ডেলিভারি ${tk(o.delivery)}) | ${esc(o.payment_method)} ${esc(o.trx_id||'')}<div class="two"><select onchange="us('${o.id}','status',this.value)">${ST.map(s=>`<option ${s==o.status?'selected':''}>${s}</option>`).join('')}</select><select onchange="us('${o.id}','payment_status',this.value)">${['Unpaid','Paid'].map(s=>`<option ${s==o.payment_status?'selected':''}>${s}</option>`).join('')}</select></div><div class="two"><button class="btn ol" onclick="invoice(OL.find(x=>x.id=='${o.id}'))">ইনভয়েস</button><a class="btn ol" target="_blank" href="https://wa.me/88${esc(o.phone)}">WhatsApp</a></div></div>`).join('')||'<p class="empty">কোনো অর্ডার নেই।</p>')}
 async function us(id,f,v){if(v=='Cancelled'&&!confirm('বাতিল করলে স্টক ফেরত যাবে। নিশ্চিত?'))return aOrd();const{error}=await SB.from('orders').update({[f]:v}).eq('id',id);if(error)alert('বদলায়নি');aOrd()}
 const SF=[['wa','WhatsApp নম্বর (8801XXXXXXXXX)'],['bkash','bKash নম্বর'],['nagad','Nagad নম্বর'],['rocket','Rocket নম্বর'],['d_in','ঢাকা জেলায় ডেলিভারি চার্জ'],['d_out','ঢাকার বাইরে ডেলিভারি চার্জ'],['hero','হোমপেজের শিরোনাম'],['fb','Facebook পেজের লিংক'],['info','দোকানের তথ্য (ডেলিভারি কতদিনে, রিটার্ন নিয়ম ইত্যাদি। AI সহকারী এটা দেখে উত্তর দেবে)']];
-async function aSet(){await loadS();$('#tb').innerHTML=`<div class="form">${SF.map(f=>`<label>${f[1]}</label>${f[0]=='info'?`<textarea id="s_info" style="min-height:120px">${esc(S.info)}</textarea>`:`<input id="s_${f[0]}" value="${esc(S[f[0]])}">`}`).join('')}<button class="btn" onclick="svS()">সেটিংস সেভ করুন</button></div>`}
+const upBlock=(k,t,h)=>`<div class="form"><b>${t}</b><div class="hint">${h}</div>${S[k]?`<img src="${esc(S[k])}" alt="" style="max-width:100%;max-height:120px;display:block;margin:8px 0;background:#ddd">`:''}<input type="file" accept="image/*" id="f_${k}"><button class="btn" id="b_${k}" onclick="upImg('${k}')">আপলোড করুন</button>${S[k]?`<button class="btn ol" onclick="delImg('${k}')">মুছে ফেলুন</button>`:''}</div>`;
+async function upImg(k){
+ const f=$('#f_'+k).files[0];if(!f)return alert('আগে একটা ছবি বাছুন।');
+ const b=$('#b_'+k);b.disabled=true;b.textContent='আপলোড হচ্ছে...';
+ const png=k=='logo',ty=png?'image/png':'image/jpeg',path='site/'+k+'-'+Date.now()+(png?'.png':'.jpg'),u=await SB.storage.from('products').upload(path,await shrink(f,png?400:1600,ty),{contentType:ty});
+ if(u.error){b.disabled=false;b.textContent='আপলোড করুন';return alert('আপলোড হয়নি: '+u.error.message)}
+ const{error}=await SB.from('settings').upsert({key:k,value:SB.storage.from('products').getPublicUrl(path).data.publicUrl});
+ alert(error?'সেভ হয়নি: '+error.message:'হয়ে গেছে। সাইট রিফ্রেশ করলে দেখা যাবে।');aSet()}
+async function delImg(k){if(confirm('মুছে ফেলবেন?')){await SB.from('settings').upsert({key:k,value:''});aSet()}}
+async function aSet(){await loadS();$('#tb').innerHTML=upBlock('logo','দোকানের লোগো','নামের পাশে দেখাবে। স্বচ্ছ (PNG) ছবি ভালো।')+upBlock('banner','হোমপেজের ব্যানার ছবি','হোমপেজের ওপরে বড় করে দেখাবে। চওড়া ছবি দিন।')+`<div class="form">${SF.map(f=>`<label>${f[1]}</label>${f[0]=='info'?`<textarea id="s_info" style="min-height:120px">${esc(S.info)}</textarea>`:`<input id="s_${f[0]}" value="${esc(S[f[0]])}">`}`).join('')}<button class="btn" onclick="svS()">সেটিংস সেভ করুন</button></div>`}
 async function svS(){const{error}=await SB.from('settings').upsert(SF.map(f=>({key:f[0],value:$('#s_'+f[0]).value.trim()})));alert(error?'সেভ হয়নি: '+error.message:'সেভ হয়েছে।')}
 
 /* ---- router ---- */
-const route=()=>{closeM();lbx();if(location.hash&&location.pathname!='/')history.replaceState(null,'','/'+location.hash);const h=location.hash,m=location.pathname.match(/^\/product\/([^/]+)/);h=='#admin'?admin():shop(h?h.slice(1)||'/':m?'/p/'+decodeURIComponent(m[1]):'/')};
+const route=()=>{closeM();lbx();if(location.hash&&location.pathname!='/')history.replaceState(null,'','/'+location.hash);const h=location.hash,m=location.pathname.match(/^\/product\/([^/]+)/);
+ if(h=='#admin')return admin();
+ const pth=h?h.slice(1)||'/':m?'/p/'+decodeURIComponent(m[1]):'/';shop(pth);
+ /* tidy the address bar: show / and /product/name instead of /#/ and /#/p/name */
+ const pm=pth.match(/^\/p\/(.+)/);if(pth=='/')history.replaceState(null,'','/');else if(pm)history.replaceState(null,'','/product/'+pm[1])};
 addEventListener('hashchange',route);route();
 </script>
 </body>
