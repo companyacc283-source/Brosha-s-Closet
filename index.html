@@ -58,10 +58,14 @@ textarea{min-height:70px}
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}.stat{border:1px solid var(--l);padding:12px;text-align:center}.stat b{display:block;font-size:22px;color:var(--g)}
 .login{max-width:360px;margin:60px auto;padding:0 16px}
 footer{background:var(--k);color:#ccc;text-align:center;padding:22px 16px;font-size:13px;line-height:1.9}footer a{color:var(--g);margin:0 6px}
+.soc{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:16px 0 12px}.sb,footer .sb{display:inline-flex;align-items:center;gap:10px;padding:13px 22px;border-radius:32px;color:#fff;font-weight:700;font-size:16px;text-decoration:none;margin:0;box-shadow:0 2px 8px rgba(0,0,0,.35)}.sb b{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:#fff;font-size:16px;line-height:1}.sb.fb{background:#1877f2}.sb.fb b{color:#1877f2;font:700 20px Arial,sans-serif}.sb.wa{background:#25d366}
 .fab{position:fixed;right:14px;bottom:16px;background:var(--k);color:var(--g);border:1px solid var(--g);padding:12px 18px;border-radius:30px;font:inherit;font-weight:700;z-index:8;cursor:pointer}
 .rt{color:var(--g);font-weight:600}
 .logo{display:flex;align-items:center;gap:8px}.logo img{height:34px;width:auto;border-radius:4px}
 .hero.hb2{min-height:200px;display:flex;flex-direction:column;justify-content:center;align-items:center;background-size:cover;background-position:center;color:#fff;border:0}
+.bn{position:relative;overflow:hidden;background:#000}.bns{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}.bns::-webkit-scrollbar{display:none}.bnx{flex:none;width:100%;aspect-ratio:16/7;position:relative;scroll-snap-align:center}.bnx img{width:100%;height:100%;object-fit:cover;object-position:center;display:block}.bn.dim .bnx::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.22)}
+.bnt{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;color:#fff;font:700 28px 'Cormorant Garamond',serif;pointer-events:none;padding:0 16px}.bnd{position:absolute;bottom:8px;left:0;right:0;display:flex;justify-content:center;gap:6px}.bnd i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.55)}.bnd i.on{background:var(--g)}
+@media(min-width:900px){.bnx{aspect-ratio:auto;height:clamp(240px,23vw,340px)}.bnt{font-size:46px}}
 @media(min-width:900px){.hero h1{font-size:40px}.hero.hb2{min-height:380px}
 .pp.pd,.pp.cp{max-width:1300px;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}.pg{position:sticky;top:72px}.rvw{grid-column:1/-1}.gal img{max-height:78vh}}
 #modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:flex-end;justify-content:center;z-index:20}#modal.show{display:flex}
@@ -95,22 +99,34 @@ const catName=id=>(CT.find(c=>c.id==id)||{}).name||'';
 const fee=d=>+(d=='Dhaka'?S.d_in:S.d_out)||0;
 async function loadS(){try{const{data}=await SB.from('settings').select('*');(data||[]).forEach(r=>S[r.key]=r.value)}catch(e){}}
 async function loadP(){const[a,b]=await Promise.all([SB.from('products').select('*,product_variants(*)').eq('is_active',true).order('created_at',{ascending:false}),SB.from('categories').select('*').order('sort')]);P=a.data||[];CT=b.data||[];await loadRT()}
-function modal(h){$('#modal').innerHTML=`<div class="sheet"><button class="x" onclick="closeM()">✕</button>${h}</div>`;$('#modal').classList.add('show')}
-const closeM=()=>$('#modal').classList.remove('show');
+let ovN=0,ovSkip=0;
+const ovOpen=()=>{history.pushState({ov:1},'');ovN++},ovClose=()=>{if(ovN>0){ovN--;ovSkip++;history.back()}};
+function modal(h){const m=$('#modal'),was=m.classList.contains('show');m.innerHTML=`<div class="sheet"><button class="x" onclick="closeM()">✕</button>${h}</div>`;m.classList.add('show');if(!was)ovOpen()}
+const closeM=q=>{const m=$('#modal');if(m.classList.contains('show')){m.classList.remove('show');if(!q)ovClose()}};
 function share(slug){const u=location.origin+'/product/'+slug,t=encodeURIComponent(u),pr=(P||[]).find(x=>x.slug==slug),tw=encodeURIComponent((pr?pr.name+"\n":'')+u);modal(`<h2>বন্ধুদের শেয়ার করুন</h2><a class="btn" target="_blank" href="https://wa.me/?text=${tw}">WhatsApp-এ বন্ধুদের পাঠান</a><a class="btn" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=${t}">Facebook</a><button class="btn ol" onclick="navigator.clipboard.writeText('${u}').then(()=>alert('লিংক কপি হয়েছে'))">লিংক কপি করুন</button>${navigator.share?`<button class="btn ol" onclick="navigator.share({url:'${u}'})">অন্যান্য অ্যাপে</button>`:''}`)}
 
 /* ---- storefront ---- */
-const frame=()=>`<header><div class="logo" onclick="location.hash='/'">${S.logo?`<img src="${esc(S.logo)}" alt="Brosha's Closet">`:''}<span>Brosha's Closet</span></div><input placeholder="প্রোডাক্ট খুঁজুন" oninput="doSearch(this.value)"><button class="hb" onclick="location.hash='/cart'">কার্ট <span id="cc">0</span></button></header><div id="v"></div><footer>দোকান ২৫, পূর্বানী প্লাজা, কোনাপাড়া, ডেমরা, ঢাকা<br>সারা বাংলাদেশে ডেলিভারি<br><a href="#/track">অর্ডার ট্র্যাক করুন</a>${S.fb?`<a href="${esc(S.fb)}" target="_blank">Facebook</a>`:''}${S.wa?`<a href="https://wa.me/${esc(S.wa)}" target="_blank">WhatsApp</a>`:''}<a href="#admin">Admin</a><br><small>v2.9</small></footer><button class="fab" onclick="openChat()">সাহায্য</button>`;
+const socHtml=()=>{const wa=String(S.wa||'').replace(/\D/g,''),fb=S.fb||'https://facebook.com/broshacloset75';return `<div class="soc"><a class="sb fb" href="${esc(fb)}" target="_blank" rel="noopener"><b>f</b>Facebook পেজ</a>${wa?`<a class="sb wa" href="https://wa.me/${wa}?text=${encodeURIComponent("আসসালামু আলাইকুম, Brosha's Closet সম্পর্কে জানতে চাই।")}" target="_blank" rel="noopener"><b>💬</b>WhatsApp-এ কথা বলুন</a>`:''}</div>`};
+const frame=()=>`<header><div class="logo" onclick="location.hash='/'">${S.logo?`<img src="${esc(S.logo)}" alt="Brosha's Closet">`:''}<span>Brosha's Closet</span></div><input placeholder="প্রোডাক্ট খুঁজুন" oninput="doSearch(this.value)"><button class="hb" onclick="location.hash='/cart'">কার্ট <span id="cc">0</span></button></header><div id="v"></div><footer>দোকান ২৫, পূর্বানী প্লাজা, কোনাপাড়া, ডেমরা, ঢাকা<br>সারা বাংলাদেশে ডেলিভারি${socHtml()}<a href="#/track">অর্ডার ট্র্যাক করুন</a><a href="#admin">Admin</a><br><small>v3.2</small></footer><button class="fab" onclick="openChat()">সাহায্য</button>`;
 async function shop(path){
  if(!$('#v'))$('#app').innerHTML=frame();
  if(!P){$('#v').innerHTML='<p class="empty">লোড হচ্ছে...</p>';await loadS();await loadP();$('#app').innerHTML=frame()}
  scrollTo(0,0);const m=path.match(/^\/p\/(.+)/);
  m?prod(m[1]):path=='/cart'?cartPg():path=='/track'?trackPg():home();save()}
 const card=p=>`<a class="card" href="/product/${p.slug}" onclick="event.preventDefault();location.hash='/p/${p.slug}'"><div class="ph"><img loading="lazy" src="${esc(img(p))}" alt="${esc(p.name)}">${disc(p)?`<b class="bd">-${disc(p)}%</b>`:''}<button class="sh" onclick="event.preventDefault();event.stopPropagation();share('${p.slug}')">শেয়ার</button></div><div class="inf"><div class="nm">${esc(p.name)}</div><div class="pr">${tk(p.price)}${p.old_price?`<s>${tk(p.old_price)}</s>`:''}</div>${stars(p)}<div class="cl">${left(p)?esc(vs(p).map(v=>v.color).filter(Boolean).join(' · ')):'<span class="out">স্টক নেই</span>'}</div></div></a>`;
+const BN=()=>String(S.banner||'').split('|').map(x=>x.trim()).filter(Boolean);
+let bnT=null,bnP=0;
+function heroHtml(){
+ const B=BN();
+ if(!B.length)return `<div class="hero"><h1>${esc(S.hero||"Brosha's Closet")}</h1></div>`;
+ setTimeout(bnStart,100);
+ return `<div class="bn${S.hero?' dim':''}"><div class="bns" id="bns" onscroll="bnDot()" ontouchstart="bnP=Date.now()" onpointerdown="bnP=Date.now()">${B.map((u,i)=>`<div class="bnx"><img src="${esc(u)}" alt="Brosha's Closet" ${i?'loading="lazy"':'fetchpriority="high"'} decoding="async"></div>`).join('')}</div>${S.hero?`<h1 class="bnt">${esc(S.hero)}</h1>`:''}${B.length>1?`<div class="bnd">${B.map((u,i)=>`<i class="${i?'':'on'}"></i>`).join('')}</div>`:''}</div>`}
+function bnStart(){clearInterval(bnT);const e=$('#bns');if(!e||e.children.length<2)return;bnT=setInterval(()=>{const e=$('#bns');if(!e){clearInterval(bnT);return}if(document.hidden||Date.now()-bnP<6000)return;const w=e.clientWidth,i=Math.round(e.scrollLeft/w)+1;e.scrollTo({left:i>=e.children.length?0:i*w,behavior:'smooth'})},4000)}
+function bnDot(){const e=$('#bns');if(!e)return;const i=Math.round(e.scrollLeft/e.clientWidth);document.querySelectorAll('.bnd i').forEach((d,j)=>d.classList.toggle('on',j==i))}
 function home(){document.title="Brosha's Closet | থ্রি-পিস, কো-অর্ড সেট, গার্লস ও কিডস ফ্যাশন - ডেমরা, ঢাকা";
  const f=P.filter(p=>(!cat||p.category_id==cat)&&(!q||hay(p).includes(q.trim().toLowerCase()))),rich=!cat&&!q;
  const g=(t,l)=>l.length?`<h2 class="st">${t}</h2><div class="grid">${l.map(card).join('')}</div>`:'';
- $('#v').innerHTML=`${rich?`<div class="hero${S.banner?' hb2':''}"${S.banner?` style="background-image:linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.35)),url('${esc(S.banner)}')"`:''}>${S.hero||!S.banner?`<h1>${esc(S.hero||"Brosha's Closet")}</h1>`:''}</div>`:''}<div class="chips"><button class="chip ${cat?'':'on'}" onclick="cat='';home()">সব</button>${CT.map(c=>`<button class="chip ${cat==c.id?'on':''}" onclick="cat='${c.id}';home()">${esc(c.name)}</button>`).join('')}</div><main>${rich?g('নতুন এসেছে',f.slice(0,8))+g('বেস্ট সেলার',f.filter(p=>p.best_seller))+g('বিশেষ অফার',f.filter(p=>disc(p)))+g('ফিচার্ড',f.filter(p=>p.featured))+g('সব প্রোডাক্ট',f):g(esc(cat?catName(cat):'ফলাফল'),f)}${f.length?'':'<p class="empty">কোনো প্রোডাক্ট পাওয়া যায়নি।</p>'}</main>`}
+ $('#v').innerHTML=`${rich?heroHtml():''}<div class="chips"><button class="chip ${cat?'':'on'}" onclick="cat='';home()">সব</button>${CT.map(c=>`<button class="chip ${cat==c.id?'on':''}" onclick="cat='${c.id}';home()">${esc(c.name)}</button>`).join('')}</div><main>${rich?g('নতুন এসেছে',f.slice(0,8))+g('বেস্ট সেলার',f.filter(p=>p.best_seller))+g('বিশেষ অফার',f.filter(p=>disc(p)))+g('ফিচার্ড',f.filter(p=>p.featured))+g('সব প্রোডাক্ট',f):g(esc(cat?catName(cat):'ফলাফল'),f)}${f.length?'':'<p class="empty">কোনো প্রোডাক্ট পাওয়া যায়নি।</p>'}</main>`}
 const hay=p=>[p.name,p.description,catName(p.category_id),...vs(p).map(v=>v.color)].join(' ').toLowerCase();
 function doSearch(v){q=v;cat='';location.hash.length>2?location.hash='/':home()}
 function prod(slug){
@@ -121,10 +137,12 @@ function pv(){
  $('#v').innerHTML=`<main class="pp pd"><div class="pg"><div class="gal" id="gal" onscroll="gs()">${v.images.map((u,i)=>`<img src="${esc(u)}" alt="${esc(p.name)} ${esc(v.color)}" onclick="zoom(${i})">`).join('')}</div>${v.images.length>1?`<div class="th">${v.images.map((u,i)=>`<button class="sw ${i?'':'on'}" onclick="go(${i})"><img src="${esc(u)}" alt=""></button>`).join('')}</div>`:''}</div><div class="pi"><h2>${esc(p.name)}</h2>${stars(p)}<div class="pr big">${tk(price)}${p.old_price?`<s>${tk(p.old_price)}</s><b class="bd2">-${disc(p)}%</b>`:''}</div><label>রঙ: <b>${esc(v.color||'Default')}</b></label><div class="opt">${V.map((x,i)=>`<button class="chip ${i==vi?'on':''}" ${stk(x)?'':'disabled'} onclick="sel.v=${i};sel.s='';sel.n=1;pv()">${esc(x.color||'Default')}${stk(x)?'':' (শেষ)'}</button>`).join('')}</div><label>সাইজ</label><div class="opt">${szs(v).map(([k,c])=>`<button class="chip ${k==s?'on':''}" ${+c>0?'':'disabled'} onclick="sel.s='${esc(k)}';sel.n=1;pv()">${esc(k)}</button>`).join('')}</div>${s?`<div class="hint">স্টকে আছে: ${mx}টি</div>`:''}<label>পরিমাণ</label><div class="q"><button onclick="sel.n=Math.max(1,sel.n-1);pv()">−</button><b>${n}</b><button onclick="sel.n=Math.min(${mx},sel.n+1);pv()">+</button></div><div class="two"><button class="btn" onclick="addC(false)">কার্টে যোগ করুন</button><button class="btn gd" onclick="addC(true)">অর্ডার নাও</button></div><button class="btn ol" onclick="share('${p.slug}')">বন্ধুদের শেয়ার করুন</button><h3>বিবরণ</h3><p class="desc">${esc(p.description||'')}</p></div><div id="rv" class="rvw"></div></main>${rel.length?`<main><h2 class="st">আরও প্রোডাক্ট দেখুন</h2><div class="grid">${rel.map(card).join('')}</div></main>`:''}`;drawRev()}
 function go(i){const g=$('#gal');g.scrollTo({left:i*g.clientWidth,behavior:'smooth'})}
 function gs(){const g=$('#gal'),i=Math.round(g.scrollLeft/g.clientWidth);document.querySelectorAll('.th .sw').forEach((b,j)=>b.classList.toggle('on',j==i))}
-function zoom(i){const d=document.createElement('div');d.id='lb';d.innerHTML=`<button class="x" onclick="lbx()">✕</button><div class="lbs"><img src="${esc(typeof i=='string'?i:vs(sel.p)[sel.v].images[i])}" alt="" onclick="this.classList.toggle('z')"></div><p>ট্যাপ করলে জুম হবে, আঙুল দিয়ে সরিয়ে দেখুন</p>`;document.body.appendChild(d)}
-const lbx=()=>{const d=$('#lb');d&&d.remove()};
+function zoom(i){const d=document.createElement('div');d.id='lb';d.innerHTML=`<button class="x" onclick="lbx()">✕</button><div class="lbs"><img src="${esc(typeof i=='string'?i:vs(sel.p)[sel.v].images[i])}" alt="" onclick="this.classList.toggle('z')"></div><p>ট্যাপ করলে জুম হবে, আঙুল দিয়ে সরিয়ে দেখুন</p>`;document.body.appendChild(d);ovOpen()}
+const lbx=q=>{const d=$('#lb');if(d){d.remove();if(!q)ovClose()}};
+function sizePick(buy){const{p,v:vi}=sel,v=vs(p)[vi];sel.pend=!!buy;modal(`<h2>সাইজ বেছে নিন</h2><p class="hint">${esc(p.name)} - ${esc(v.color||'')}</p><div class="opt">${szs(v).map(([k,c])=>`<button class="chip" ${+c>0?'':'disabled'} onclick="pickSize('${esc(k)}')">${esc(k)}${+c>0?'':' (শেষ)'}</button>`).join('')}</div><p class="hint">যে সাইজ স্টকে নেই সেটা বাছা যাবে না। সাইজ বেছে নিলে তবেই অর্ডার বা কার্টে যোগ হবে।</p>`)}
+function pickSize(k){const b=sel.pend;sel.s=k;sel.n=1;if(b){closeM(1);ovN=Math.max(0,ovN-1)}else closeM();pv();addC(b)}
 function addC(buy){
- const{p,v:vi,s,n}=sel,v=vs(p)[vi];if(!s)return alert('সাইজ বেছে নিন');
+ const{p,v:vi,s,n}=sel,v=vs(p)[vi];if(!s)return sizePick(buy);
  const mx=+v.sizes[s],k=cart.find(x=>x.vid==v.id&&x.size==s);
  if(k)k.q=Math.min(mx,k.q+n);else cart.push({vid:v.id,name:p.name,color:v.color,size:s,price:v.price??p.price,img:v.images[0],q:Math.min(mx,n),max:mx});
  save();buy?location.hash='/cart':alert('কার্টে যোগ হয়েছে')}
@@ -166,6 +184,7 @@ function dvc(){$('#ds').innerHTML=DV[$('#dv').value].map(d=>`<option>${d}</optio
 function tt(){const f=fee($('#ds').value);$('#dl').textContent=tk(f);$('#tt').textContent=tk(sub()+f)}
 function pmc(){const m=$('#pm').value;$('#pi').innerHTML=m=='COD'?'':`<div class="pay">${m} নম্বর <b>${esc(S[m.toLowerCase()])}</b>-এ মোট টাকা Send Money করুন, তারপর TrxID লিখুন।</div><input id="trx" placeholder="TrxID">`}
 async function order(){
+ if(cart.some(c=>!c.size))return alert('প্রতিটি প্রোডাক্টের সাইজ বেছে নিন।');
  const g=id=>(($('#'+id)||{}).value||'').trim(),pm=g('pm'),b=$('#ob');
  const o={name:g('nm'),phone:g('ph'),alt:g('al'),division:g('dv'),district:g('ds'),thana:g('th'),address:g('ad'),note:g('nt'),payment:pm,trx:g('trx'),items:cart.map(c=>({variant:c.vid,size:c.size,qty:c.q}))};
  if(o.name.length<2||!/^01\d{9}$/.test(o.phone)||o.address.length<8)return alert('নাম, সঠিক মোবাইল নম্বর (01XXXXXXXXX) ও পূর্ণ ঠিকানা দিন।');
@@ -185,7 +204,7 @@ async function trk(){const{data}=await SB.rpc('track_order',{n:+$('#tn').value.r
 
 /* ---- AI chat (needs /api/chat + GEMINI_API_KEY; works without it, shows WhatsApp) ---- */
 function openChat(){
- modal(`<h2>সাহায্য</h2><div class="msgs" id="msgs"></div><div class="qs">${['কী কী প্রোডাক্ট আছে?','ডেলিভারি চার্জ কত?','কীভাবে অর্ডার করব?','কীভাবে পেমেন্ট করব?'].map(t=>`<button class="chip" onclick="ask(this.textContent)">${t}</button>`).join('')}</div><div class="cb"><input id="cq" placeholder="আপনার প্রশ্ন লিখুন" onkeydown="if(event.key=='Enter')ask()"><button onclick="ask()">পাঠান</button></div>${S.wa?`<a class="btn" target="_blank" href="https://wa.me/${esc(S.wa)}">WhatsApp-এ কথা বলুন</a>`:''}`);
+ modal(`<h2>সাহায্য</h2><div class="msgs" id="msgs"></div><div class="qs">${['কী কী প্রোডাক্ট আছে?','ডেলিভারি চার্জ কত?','কীভাবে অর্ডার করব?','কীভাবে পেমেন্ট করব?'].map(t=>`<button class="chip" onclick="ask(this.textContent)">${t}</button>`).join('')}</div><div class="cb"><input id="cq" placeholder="আপনার প্রশ্ন লিখুন" onkeydown="if(event.key=='Enter')ask()"><button onclick="ask()">পাঠান</button></div><p class="hint" style="margin-top:12px;text-align:center">সরাসরি কথা বলতে চাইলে:</p>${socHtml()}`);
  if(!hist.length)hist.push({r:'a',t:"আসসালামু আলাইকুম! Brosha's Closet-এ স্বাগতম। প্রোডাক্ট, দাম, সাইজ, ডেলিভারি বা অর্ডার নিয়ে যেকোনো প্রশ্ন করুন।"});drawM()}
 function drawM(){const m=$('#msgs');if(!m)return;m.innerHTML=hist.map(x=>`<div class="m ${x.r}">${esc(x.t).replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" style="color:inherit;text-decoration:underline">$1</a>')}</div>`).join('');m.scrollTop=m.scrollHeight}
 let aiOff=false;
@@ -259,7 +278,7 @@ function aEd(){
 const ai=(i,el)=>{const v=ed.vs[i];[...el.files].slice(0,10-v.imgs.length).forEach(f=>v.imgs.push({f,u:URL.createObjectURL(f)}));aEd()},mk=(i,j)=>{const a=ed.vs[i].imgs;a.unshift(a.splice(j,1)[0]);aEd()},rm=(i,j)=>{ed.vs[i].imgs.splice(j,1);aEd()};
 const parseSz=s=>{const o={};String(s).split(',').forEach(x=>{const[k,n]=x.split(':');if(k&&k.trim())o[k.trim()]=Math.max(0,parseInt(n)||0)});return o};
 const slugify=s=>s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'p';
-function shrink(f,m=900,t='image/jpeg'){return new Promise(r=>{const i=new Image;i.onload=()=>{const k=Math.min(1,m/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);c.toBlob(r,t,.8)};i.src=URL.createObjectURL(f)})}
+function shrink(f,m=900,t='image/jpeg',ql=.8){return new Promise(r=>{const i=new Image;i.onload=()=>{const k=Math.min(1,m/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=i.width*k;c.height=i.height*k;const x=c.getContext('2d');x.imageSmoothingQuality='high';x.drawImage(i,0,0,c.width,c.height);c.toBlob(r,t,ql)};i.src=URL.createObjectURL(f)})}
 async function saveP(){
  const bt=$('#sv'),fail=m=>{bt.disabled=false;bt.textContent='সেভ করুন';alert(m)},n=ed.name.trim(),pr=+ed.price;
  if(!n||!pr||!ed.category_id)return alert('নাম, দাম ও ক্যাটাগরি দিন।');
@@ -304,17 +323,34 @@ async function upImg(k){
  if(u.error){b.disabled=false;b.textContent='আপলোড করুন';return alert('আপলোড হয়নি: '+u.error.message)}
  const{error}=await SB.from('settings').upsert({key:k,value:SB.storage.from('products').getPublicUrl(path).data.publicUrl});
  alert(error?'সেভ হয়নি: '+error.message:'হয়ে গেছে। সাইট রিফ্রেশ করলে দেখা যাবে।');aSet()}
+const bnBlock=()=>`<div class="form"><b>হোমপেজের ব্যানার ছবি (স্লাইডে একটার পর একটা চলবে)</b><div class="hint">সর্বোচ্চ ৬টি চওড়া ছবি দিন। একটা দিলে স্থির থাকবে। সবচেয়ে ভালো মাপ: ২৪০০×১০৫০ (অনুপাত ১৬:৭), তাহলে কিছু কাটা পড়বে না। আগে দেওয়া ঝাপসা ছবি মুছে নতুন করে দিন।</div>${BN().map((u,i)=>`<div class="ci"><img src="${esc(u)}" alt=""><div>ছবি ${i+1}</div><button class="btn ol" style="margin:0;width:auto" onclick="delBn(${i})">মুছুন</button></div>`).join('')}<input type="file" accept="image/*" id="f_bn"><button class="btn" id="b_bn" onclick="upBn()">নতুন ব্যানার যোগ করুন</button></div>`;
+async function upBn(){
+ const f=$('#f_bn').files[0];if(!f)return alert('আগে একটা ছবি বাছুন।');const B=BN();if(B.length>=6)return alert('সর্বোচ্চ ৬টি ব্যানার দেওয়া যায়।');
+ const b=$('#b_bn');b.disabled=true;b.textContent='আপলোড হচ্ছে...';
+ const path='site/banner-'+Date.now()+'.jpg',u=await SB.storage.from('products').upload(path,await shrink(f,2400,'image/jpeg',.92),{contentType:'image/jpeg'});
+ if(u.error){b.disabled=false;b.textContent='নতুন ব্যানার যোগ করুন';return alert('আপলোড হয়নি: '+u.error.message)}
+ B.push(SB.storage.from('products').getPublicUrl(path).data.publicUrl);
+ const{error}=await SB.from('settings').upsert({key:'banner',value:B.join('|')});alert(error?'সেভ হয়নি: '+error.message:'যোগ হয়েছে।');aSet()}
+async function delBn(i){if(!confirm('এই ব্যানার মুছে ফেলবেন?'))return;const B=BN();B.splice(i,1);await SB.from('settings').upsert({key:'banner',value:B.join('|')});aSet()}
 async function delImg(k){if(confirm('মুছে ফেলবেন?')){await SB.from('settings').upsert({key:k,value:''});aSet()}}
-async function aSet(){await loadS();$('#tb').innerHTML=upBlock('logo','দোকানের লোগো','নামের পাশে দেখাবে। স্বচ্ছ (PNG) ছবি ভালো।')+upBlock('banner','হোমপেজের ব্যানার ছবি','হোমপেজের ওপরে বড় করে দেখাবে। চওড়া ছবি দিন।')+`<div class="form">${SF.map(f=>`<label>${f[1]}</label>${f[0]=='info'?`<textarea id="s_info" style="min-height:120px">${esc(S.info)}</textarea>`:`<input id="s_${f[0]}" value="${esc(S[f[0]])}">`}`).join('')}<button class="btn" onclick="svS()">সেটিংস সেভ করুন</button></div>`}
+async function aSet(){await loadS();$('#tb').innerHTML=upBlock('logo','দোকানের লোগো','নামের পাশে দেখাবে। স্বচ্ছ (PNG) ছবি ভালো।')+bnBlock()+`<div class="form">${SF.map(f=>`<label>${f[1]}</label>${f[0]=='info'?`<textarea id="s_info" style="min-height:120px">${esc(S.info)}</textarea>`:`<input id="s_${f[0]}" value="${esc(S[f[0]])}">`}`).join('')}<button class="btn" onclick="svS()">সেটিংস সেভ করুন</button></div>`}
 async function svS(){const{error}=await SB.from('settings').upsert(SF.map(f=>({key:f[0],value:$('#s_'+f[0]).value.trim()})));alert(error?'সেভ হয়নি: '+error.message:'সেভ হয়েছে।')}
 
 /* ---- router ---- */
-const route=()=>{closeM();lbx();if(location.hash&&location.pathname!='/')history.replaceState(null,'','/'+location.hash);const h=location.hash,m=location.pathname.match(/^\/product\/([^/]+)/);
+const route0=()=>{ovN=0;closeM(1);lbx(1);if(location.hash&&location.pathname!='/')history.replaceState(null,'','/'+location.hash);const h=location.hash,m=location.pathname.match(/^\/product\/([^/]+)/);
  if(h=='#admin')return admin();
  const pth=h?h.slice(1)||'/':m?'/p/'+decodeURIComponent(m[1]):'/';shop(pth);
  /* tidy the address bar: show / and /product/name instead of /#/ and /#/p/name */
  const pm=pth.match(/^\/p\/(.+)/);if(pth=='/')history.replaceState(null,'','/');else if(pm)history.replaceState(null,'','/product/'+pm[1])};
-addEventListener('hashchange',route);route();
+let routed='';const route=()=>{route0();routed=location.pathname+location.hash};
+const chk=()=>{if(location.pathname+location.hash!=routed)route()};
+addEventListener('hashchange',chk);
+addEventListener('popstate',()=>{
+ if(ovSkip>0){ovSkip--;return}
+ if(ovN>0){ovN--;const d=$('#lb');if(d)d.remove();else $('#modal').classList.remove('show');return}
+ if(history.state&&history.state.ov){history.back();return}
+ chk()});
+route();
 </script>
 </body>
 </html>
